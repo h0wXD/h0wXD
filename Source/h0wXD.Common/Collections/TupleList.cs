@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace h0wXD.Common
+namespace h0wXD.Common.Collections
 {
     /// <summary>
     /// Allows initializing a list of tuples easily using brackets {}

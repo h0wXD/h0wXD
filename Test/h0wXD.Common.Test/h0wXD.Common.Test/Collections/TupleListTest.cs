@@ -1,8 +1,8 @@
 ﻿using System;
-using h0wXD.Common;
+using h0wXD.Common.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace h0wXD.Common.Test
+namespace h0wXD.Common.Test.Collections
 {
     [TestClass]
     public class TupleListTest
