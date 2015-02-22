@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h0wXD.Email", "Source\h0wXD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h0wXD.Email.Service.TestApp", "Test\h0wXD.Email.Service.TestApp\h0wXD.Email.Service.TestApp.csproj", "{20B7C642-AFCC-46C0-A279-A1A5B4515110}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h0wXD.Common.Test", "Test\h0wXD.Common.Test\h0wXD.Common.Test\h0wXD.Common.Test.csproj", "{1E9C98AA-2A57-4072-9EF4-30E25FAC29DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{20B7C642-AFCC-46C0-A279-A1A5B4515110}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20B7C642-AFCC-46C0-A279-A1A5B4515110}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20B7C642-AFCC-46C0-A279-A1A5B4515110}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E9C98AA-2A57-4072-9EF4-30E25FAC29DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E9C98AA-2A57-4072-9EF4-30E25FAC29DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E9C98AA-2A57-4072-9EF4-30E25FAC29DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E9C98AA-2A57-4072-9EF4-30E25FAC29DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
