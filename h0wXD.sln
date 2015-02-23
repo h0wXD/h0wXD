@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h0wXD.Common", "Source\h0wXD.Common\h0wXD.Common.csproj", "{E6EC138F-E6A9-4722-A6E4-34B282F98C1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h0wXD", "Source\h0wXD\h0wXD.csproj", "{E6EC138F-E6A9-4722-A6E4-34B282F98C1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h0wXD.Email.Service", "Source\h0wXD.Email.Service\h0wXD.Email.Service.csproj", "{2C97BE95-5836-47D5-B7F0-71A1D6368922}"
 EndProject
@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h0wXD.Email", "Source\h0wXD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h0wXD.Email.Service.TestApp", "Test\h0wXD.Email.Service.TestApp\h0wXD.Email.Service.TestApp.csproj", "{20B7C642-AFCC-46C0-A279-A1A5B4515110}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h0wXD.Common.Test", "Test\h0wXD.Common.Test\h0wXD.Common.Test\h0wXD.Common.Test.csproj", "{1E9C98AA-2A57-4072-9EF4-30E25FAC29DF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "h0wXD.Test", "Test\h0wXD.Test\h0wXD.Test.csproj", "{1E9C98AA-2A57-4072-9EF4-30E25FAC29DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
