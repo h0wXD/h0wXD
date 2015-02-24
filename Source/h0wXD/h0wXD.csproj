@@ -43,7 +43,7 @@
     <Compile Include="IO\CsvFileReader.cs" />
     <Compile Include="IO\Interfaces\ICsvFileReader.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="Logging\Behaviors\LogToBehaviorBase.cs" />
+    <Compile Include="Logging\Behaviors\Interfaces\ILogToBehavior.cs" />
     <Compile Include="Logging\Behaviors\LogToFileBehavior.cs" />
     <Compile Include="Logging\Behaviors\LogToConsoleBehavior.cs" />
     <Compile Include="Logging\Interfaces\ILogger.cs" />

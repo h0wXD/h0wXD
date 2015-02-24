@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using h0wXD.Logging.Behaviors;
+using h0wXD.Logging.Behaviors.Interfaces;
 using h0wXD.Logging.Interfaces;
 
 namespace h0wXD.Logging
 {
     public class Logger : ILogger
     {
-        private readonly List<BehaviorBase> m_behaviorList;
+        private readonly List<ILogToBehavior> m_behaviorList;
         public string LastMessage { get; private set; }
 
         public event EventHandler<LogEventArgs> Log;
@@ -15,10 +16,10 @@ namespace h0wXD.Logging
         
         public Logger()
         {
-            m_behaviorList = new List<BehaviorBase>();
+            m_behaviorList = new List<ILogToBehavior>();
         }
 
-        public void AddBehavior(BehaviorBase _behavior)
+        public void AddBehavior(ILogToBehavior _behavior)
         {
             m_behaviorList.Add(_behavior);
         }

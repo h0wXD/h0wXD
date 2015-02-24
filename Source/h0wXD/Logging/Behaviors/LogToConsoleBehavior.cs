@@ -1,8 +1,9 @@
 ﻿using System;
+using h0wXD.Logging.Behaviors.Interfaces;
 
 namespace h0wXD.Logging.Behaviors
 {
-    public class LogToConsoleBehavior : BehaviorBase
+    public class LogToConsoleBehavior : ILogToBehavior
     {
         private readonly string m_sDateFormat;
         private DateTime m_initDate;
@@ -13,7 +14,7 @@ namespace h0wXD.Logging.Behaviors
             m_initDate = DateTime.Now;
         }
 
-        public override void Write(LogEventArgs _args)
+        public void Write(LogEventArgs _args)
         {
             if (m_initDate.DayOfYear !=  _args.Date.DayOfYear)
             {

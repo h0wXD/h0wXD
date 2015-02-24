@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
+using h0wXD.Logging.Behaviors.Interfaces;
 
 namespace h0wXD.Logging.Behaviors
 {
-    public class LogToFileBehavior : BehaviorBase
+    public class LogToFileBehavior : ILogToBehavior
     {
         private readonly string m_sDateFormat;
         private readonly string m_sLogPath;
@@ -29,7 +30,7 @@ namespace h0wXD.Logging.Behaviors
             InitStreamWriter();
         }
 
-        public override void Write(LogEventArgs _args)
+        public void Write(LogEventArgs _args)
         {
             if (m_initDate.DayOfYear !=  _args.Date.DayOfYear)
             {
