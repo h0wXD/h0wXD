@@ -2,7 +2,7 @@
 using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace h0wXD.Common.Test
+namespace h0wXD.Test
 {
     [TestClass]
     public class ExtensionMethodsTest

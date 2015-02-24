@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using h0wXD.Common.IO;
-using h0wXD.Common.IO.Interfaces;
+using h0wXD.IO;
+using h0wXD.IO.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace h0wXD.Common.Test.IO
+namespace h0wXD.Test.IO
 {
     [TestClass]
     public class CsvFileReaderTest

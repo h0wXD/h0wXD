@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualBasic.FileIO;
 using System.IO;
-using System.Linq;
-using h0wXD.Common.IO.Interfaces;
+using h0wXD.IO.Interfaces;
 
-namespace h0wXD.Common.IO
+namespace h0wXD.IO
 {
     /// <summary>
     /// CsvFileReader is a customized version of the Visual Basic TextFieldParser class.

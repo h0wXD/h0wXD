@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace h0wXD.Common.IO.Interfaces
+namespace h0wXD.IO.Interfaces
 {
     public interface ICsvFileReader
     {

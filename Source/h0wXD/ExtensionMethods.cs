@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace h0wXD.Common
+namespace h0wXD
 {
     public static class ExtensionMethods
     {

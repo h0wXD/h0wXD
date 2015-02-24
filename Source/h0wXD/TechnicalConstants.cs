@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace h0wXD.Common
+﻿
+namespace h0wXD
 {
     public class TechnicalConstants
     {
