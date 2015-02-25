@@ -155,5 +155,22 @@ namespace h0wXD.Test.Logging
 
             Assert.AreNotEqual(sCurrentLogFile, sNextLogFile);
         }
+        
+        [TestMethod]
+        public void LogToFileWrite_DateChange_LogsDateChangeInFile()
+        {
+            var args = new LogEventArgs()
+            {
+                Date = DateTime.Now.AddDays(1),
+                Message = "Message from the future!",
+                LogType = LogType.Normal
+            };
+
+            var sCurrentLogFile = ms_testLogger.LogToFileBehavior.CurrentFile;
+            ms_testLogger.LogToFileBehavior.Write(args);
+            var sNextLogFile = ms_testLogger.LogToFileBehavior.CurrentFile;
+
+            Assert.AreEqual(sCurrentLogFile, sNextLogFile);
+        }
     }
 }

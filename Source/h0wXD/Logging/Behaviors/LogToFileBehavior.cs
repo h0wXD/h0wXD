@@ -40,6 +40,10 @@ namespace h0wXD.Logging.Behaviors
                 {
                     InitStreamWriter();
                 }
+                else
+                {
+                    m_streamWriter.WriteLine(LogMessageFormatter.FormatDate(m_initDate));
+                }
             }
 
             m_streamWriter.WriteLine(LogMessageFormatter.Format(_args, m_sDateFormat, _args.Date));
