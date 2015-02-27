@@ -102,6 +102,11 @@ namespace h0wXD.IO
 
         public void Start()
         {
+            if (m_watchers.Count == 0)
+            {
+                throw new InvalidOperationException("Cannot start when no directories where added.");
+            }
+
             if (!Active)
             {
                 Active = true;

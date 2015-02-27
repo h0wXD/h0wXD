@@ -287,5 +287,23 @@ namespace h0wXD.Test.IO
             Thread.Sleep(500);
             Assert.IsFalse(bHandlerInvoked);
         }
+        
+        [TestMethod]
+        public void StartStop_Default_ActiveBoolSet()
+        {
+            m_directoryWatcher.AddDirectory(new WatchDirectory(m_sTempDirectory, false));
+            Assert.IsFalse(m_directoryWatcher.Active);
+            m_directoryWatcher.Start();
+            Assert.IsTrue(m_directoryWatcher.Active);
+            m_directoryWatcher.Stop();
+            Assert.IsFalse(m_directoryWatcher.Active);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Start_NoDirecoriesAdded_InvalidOperationExceptionThrown()
+        {
+            m_directoryWatcher.Start();
+        }
     }
 }
