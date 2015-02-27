@@ -10,6 +10,7 @@ namespace h0wXD.Test.Logging
 
         public TestLogger()
         {
+            AddBehavior(new LogToDebugViewBehavior());
             AddBehavior(new LogToConsoleBehavior());
             AddBehavior(LogToFileBehavior = new LogToFileBehavior());
             AddBehavior(LogToFileBehaviorSwapDaily = new LogToFileBehavior(@".\Log", "hh:mm:ss tt", true));

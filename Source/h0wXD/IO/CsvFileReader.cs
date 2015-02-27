@@ -122,7 +122,7 @@ namespace h0wXD.IO
 
         public void Reset()
         {
-            if (null == m_textFieldParser)
+            if (m_textFieldParser == null)
             {
                 m_textFieldParser = new TextFieldParser(FileName, m_encoding)
                 {

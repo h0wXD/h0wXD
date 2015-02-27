@@ -51,6 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="IO\CsvFileReaderTest.cs" />
+    <Compile Include="IO\DirectoryWatcherTest.cs" />
     <Compile Include="Logging\TestLogger.cs" />
     <Compile Include="Logging\TestLoggerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

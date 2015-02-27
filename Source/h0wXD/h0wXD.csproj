@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,10 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\EncryptedConfiguration.cs" />
+    <Compile Include="Configuration\Interfaces\IEncryptedConfiguration.cs" />
     <Compile Include="IO\CsvFileReader.cs" />
+    <Compile Include="IO\DirectoryWatcher.cs" />
+    <Compile Include="IO\Domain\WatchDirectory.cs" />
     <Compile Include="IO\Interfaces\ICsvFileReader.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="IO\Interfaces\IDirectoryWatcher.cs" />
     <Compile Include="Logging\Behaviors\Interfaces\ILogToBehavior.cs" />
+    <Compile Include="Logging\Behaviors\LogToDebugViewBehavior.cs" />
     <Compile Include="Logging\Behaviors\LogToFileBehavior.cs" />
     <Compile Include="Logging\Behaviors\LogToConsoleBehavior.cs" />
     <Compile Include="Logging\Interfaces\ILogger.cs" />
