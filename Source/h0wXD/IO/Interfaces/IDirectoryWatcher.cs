@@ -15,6 +15,7 @@ namespace h0wXD.IO.Interfaces
         event FileSystemEventHandler Renamed;
         
         void AddDirectory(WatchDirectory _directory);
+        void AddDirectory(string _sDirectory, string _sFileMask, bool _bWatchSubdirectories = false);
 
         void Start();
         void Stop();

@@ -14,7 +14,6 @@ namespace h0wXD.Configuration
     {
         private readonly System.Configuration.Configuration m_configuration;
         private readonly System.Configuration.ClientSettingsSection m_section;
-        private readonly bool m_bConfigError;
         private readonly string m_sConfigurationEncryptionProvider;
 
         /// <summary>
@@ -25,24 +24,14 @@ namespace h0wXD.Configuration
         {
             m_sConfigurationEncryptionProvider = _sConfigurationEncryptionProvider;
 
-            try
+            m_configuration = System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.None);
+            var sConfigSectionName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName).Replace(".vshost", "");
+
+            m_section = (System.Configuration.ClientSettingsSection)m_configuration.GetSection("userSettings/" + sConfigSectionName + ".Settings");
+
+            if (!m_section.SectionInformation.IsProtected)
             {
-                m_configuration = System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.None);
-                var sConfigSectionName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName).Replace(".vshost", "");
-
-                m_section = (System.Configuration.ClientSettingsSection)m_configuration.GetSection("userSettings/" + sConfigSectionName + ".Properties.Settings");
-
-                if (!m_section.SectionInformation.IsProtected)
-                {
-                    Save();
-                }
-
-                m_bConfigError = false;
-            }
-            catch (Exception ex)
-            {
-                m_bConfigError = true;
-                throw;
+                Save();
             }
         }
 
@@ -50,15 +39,11 @@ namespace h0wXD.Configuration
         /// Reads an encrypted configuration value and automatically casts it to the provided type.
         /// </summary>
         /// <typeparam name="T">Type to cast the configuration key to.</typeparam>
-        /// <param name="_sConfigurationKey"></param>
+        /// <param name="_sConfigurationKey">Key to read.</param>
+        /// <param name="_defaultValue">Default value to return.</param>
         /// <returns>Value of the configuration key.</returns>
-        public T Read<T>(string _sConfigurationKey)
+        public T Read<T>(string _sConfigurationKey, T _defaultValue = default(T))
         {
-            if (m_bConfigError)
-            {
-                return default(T);
-            }
-
             if (m_section.SectionInformation.IsProtected)
             {
                 m_section.SectionInformation.UnprotectSection();
@@ -68,12 +53,22 @@ namespace h0wXD.Configuration
 
             if (settingElement != null)
             {
-                var value = ((System.Configuration.SettingValueElement)(settingElement.ElementInformation.Properties["value"].Value)).ValueXml.InnerText;
+                try
+                {
+                    var value = ((System.Configuration.SettingValueElement) (settingElement.ElementInformation.Properties["value"].Value)).ValueXml.InnerText;
 
-                return (T)Convert.ChangeType(value, typeof(T));
+                    return (T) Convert.ChangeType(value, typeof (T));
+                }
+                catch (Exception)
+                {
+                    if (_defaultValue.Equals(default(T)))
+                    {
+                        throw;
+                    }
+                }
             }
 
-            return default(T);
+            return _defaultValue;
         }
 
         /// <summary>
@@ -83,11 +78,6 @@ namespace h0wXD.Configuration
         /// <param name="_value">The value to write</param>
         public void Write(string _sConfigurationKey, object _value)
         {
-            if (m_bConfigError)
-            {
-                return;
-            }
-
             if (m_section.SectionInformation.IsProtected)
             {
                 m_section.SectionInformation.UnprotectSection();
@@ -106,11 +96,6 @@ namespace h0wXD.Configuration
         /// </summary>
         public void Save()
         {
-            if (m_section == null)
-            {
-                return;
-            }
-
             if (!m_section.SectionInformation.IsProtected &&
                 !m_section.SectionInformation.IsLocked)
             {
