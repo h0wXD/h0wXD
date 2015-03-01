@@ -33,13 +33,13 @@
             // 
             // serviceProcessInstaller
             // 
-            this.serviceProcessInstaller.Account = System.ServiceProcess.ServiceAccount.NetworkService;
+            this.serviceProcessInstaller.Account = System.ServiceProcess.ServiceAccount.LocalSystem;
             this.serviceProcessInstaller.Password = null;
             this.serviceProcessInstaller.Username = null;
             // 
             // serviceInstaller
             // 
-            this.serviceInstaller.Description = "Processes emails put into dropfoler.";
+            this.serviceInstaller.Description = "Processes emails put into the dropfolder.";
             this.serviceInstaller.DisplayName = "h0wXD Email Service";
             this.serviceInstaller.ServiceName = "h0wxdEmailSvc";
             this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
@@ -56,5 +56,7 @@
 
         private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller;
         private System.ServiceProcess.ServiceInstaller serviceInstaller;
+
+        public string ServiceName { get{ return serviceInstaller.ServiceName; } }
     }
 }

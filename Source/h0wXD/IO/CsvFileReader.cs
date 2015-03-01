@@ -103,7 +103,7 @@ namespace h0wXD.IO
         {
             if (!File.Exists(_sFileName))
             {
-                throw new FileNotFoundException(TechnicalConstants.CsvFileReader.Exceptions.FileNotFound, _sFileName);
+                throw new FileNotFoundException(TechnicalConstants.IO.CsvFileReader.Exceptions.FileNotFound, _sFileName);
             }
 
             m_encoding = _encoding;
@@ -153,7 +153,7 @@ namespace h0wXD.IO
         {
             if (EndOfData)
             {
-                throw new AccessViolationException(TechnicalConstants.CsvFileReader.Exceptions.EndOfData);
+                throw new AccessViolationException(TechnicalConstants.IO.CsvFileReader.Exceptions.EndOfData);
             }
 
             if (m_textFieldParser == null)
@@ -169,7 +169,7 @@ namespace h0wXD.IO
 
                 if (EndOfData)
                 {
-                    throw new AccessViolationException(TechnicalConstants.CsvFileReader.Exceptions.EndOfData);
+                    throw new AccessViolationException(TechnicalConstants.IO.CsvFileReader.Exceptions.EndOfData);
                 }
             }
 
@@ -185,7 +185,7 @@ namespace h0wXD.IO
         {
             if (EndOfData)
             {
-                throw new AccessViolationException(TechnicalConstants.CsvFileReader.Exceptions.EndOfData);
+                throw new AccessViolationException(TechnicalConstants.IO.CsvFileReader.Exceptions.EndOfData);
             }
 
             if (m_textFieldParser == null)
@@ -201,7 +201,7 @@ namespace h0wXD.IO
 
                 if (EndOfData)
                 {
-                    throw new AccessViolationException(TechnicalConstants.CsvFileReader.Exceptions.EndOfData);
+                    throw new AccessViolationException(TechnicalConstants.IO.CsvFileReader.Exceptions.EndOfData);
                 }
             }
 

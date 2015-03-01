@@ -7,17 +7,17 @@ namespace h0wXD.Email.Service.DataAccess
 {
     public class EmailDao : IEmailDao
     {
-        private readonly string m_sPathToUnprocessed;
+        private readonly string m_sPathToError;
         private readonly string m_sPathToArchive;
 
         public EmailDao(IEncryptedConfiguration _config)
         {
             var sDropFolderPath = _config.Read<string>(TechnicalConstants.Settings.DropFolder);
             
-            m_sPathToUnprocessed = Path.Combine(sDropFolderPath, TechnicalConstants.UnprocessedFolder);
+            m_sPathToError = Path.Combine(sDropFolderPath, TechnicalConstants.ErrorFolder);
             m_sPathToArchive = Path.Combine(sDropFolderPath, TechnicalConstants.ArchiveFolder);
 
-            foreach (var sPath in new [] {m_sPathToUnprocessed, m_sPathToArchive}.Where(sPath => !Directory.Exists(sPath)))
+            foreach (var sPath in new [] {m_sPathToError, m_sPathToArchive}.Where(sPath => !Directory.Exists(sPath)))
             {
                 Directory.CreateDirectory(sPath);
             }
@@ -33,9 +33,9 @@ namespace h0wXD.Email.Service.DataAccess
             return !File.Exists(_sEmailFile);
         }
 
-        public void MoveToUnprocessed(string _sEmailFile)
+        public void MoveToError(string _sEmailFile)
         {
-            MoveFile(_sEmailFile, m_sPathToUnprocessed);
+            MoveFile(_sEmailFile, m_sPathToError);
         }
 
         public void MoveToArchive(string _sEmailFile)

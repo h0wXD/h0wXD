@@ -12,7 +12,7 @@ namespace h0wXD.Email.Service
             public const string SmtpLogin = "SmtpLogin";
             public const string SmtpPassword = "SmtpPassword";
         }
-        public const string UnprocessedFolder = "Unprocessed";
+        public const string ErrorFolder = "Error";
         public const string ArchiveFolder = "Archive";
     }
 }

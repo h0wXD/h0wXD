@@ -18,5 +18,19 @@ namespace h0wXD
 
             return new IPEndPoint(IPAddress.Parse(match.Groups["ip"].Value), int.Parse(match.Groups["port"].Value));
         }
+
+        public static bool StartsWith(this string _sText, string _sOtherText, int _iMinimumMatchCount, StringComparison _comparisonType = StringComparison.CurrentCulture)
+        {
+            _iMinimumMatchCount = Math.Min(_sText.Length, _iMinimumMatchCount);
+
+            var sTextToMatch = _sOtherText.Substring(0, Math.Min(_sOtherText.Length, _iMinimumMatchCount));
+
+            if (_sOtherText.Length == _sText.Length)
+            {
+                return _sOtherText.Equals(_sText, _comparisonType);
+            }
+
+            return _sText.StartsWith(sTextToMatch, _comparisonType);
+        }
     }
 }

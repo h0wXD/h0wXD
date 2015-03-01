@@ -5,7 +5,7 @@ namespace h0wXD.Email.Service.Interfaces
     {
         string [] FindEmailsByFileMask(string _sPath, string _sFileMask);
         bool IsProcessed(string _sEmailFile);
-        void MoveToUnprocessed(string _sEmailFile);
+        void MoveToError(string _sEmailFile);
         void MoveToArchive(string _sEmailFile);
         void Delete(string _sEmailFile);
     }

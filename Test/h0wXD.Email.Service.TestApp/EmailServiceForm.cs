@@ -51,5 +51,10 @@ namespace h0wXD.Email.Service.TestApp
                 MessageBox.Show(sUnknownError, "Unknown Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void EmailServiceForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            m_thread.Abort();
+        }
     }
 }

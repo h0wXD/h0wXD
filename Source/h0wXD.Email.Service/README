@@ -1,0 +1,8 @@
+
+The h0wXD.Email.Service supports installation from commandline.
+
+Usage:
+h0wXD.Email.Service.exe -install        Installs this service.
+h0wXD.Email.Service.exe -uninstall      Uninstalls this service.
+h0wXD.Email.Service.exe -start          Starts this service.
+h0wXD.Email.Service.exe -stop           Stops this service.

@@ -50,6 +50,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "EmailServiceForm";
             this.Text = "Email Service Test App";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EmailServiceForm_FormClosing);
             this.ResumeLayout(false);
 
         }

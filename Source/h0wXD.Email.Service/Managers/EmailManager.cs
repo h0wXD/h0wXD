@@ -47,7 +47,7 @@ namespace h0wXD.Email.Service.Managers
             var iHashCode = _sFileName.GetHashCode();
 
             if (m_emailDao.IsProcessed(_sFileName) ||
-                !StartProcessing(iHashCode))
+                StartProcessing(iHashCode))
             {
                 return;
             }
@@ -76,8 +76,8 @@ namespace h0wXD.Email.Service.Managers
             }
             catch (Exception _ex)
             {
-                m_logger.Error("Unable to parse email {0}:\r\n{1}\r\n{2}", _sFileName, _ex.Message, _ex.StackTrace);
-                m_emailDao.MoveToUnprocessed(_sFileName);
+                m_logger.Error("Unable to process email {0}:\n{1}\n{2}", _sFileName, _ex.Message, _ex.StackTrace);
+                m_emailDao.MoveToError(_sFileName);
             }
 
             SetProcessing(iHashCode, false);
