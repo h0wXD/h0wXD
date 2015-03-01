@@ -211,7 +211,6 @@ namespace h0wXD.Test.IO
             m_directoryWatcher.AddDirectory(new WatchDirectory(m_sTempDirectory, false));
             var bHandlerInvoked = false;
             var sFile = Path.Combine(m_sTempDirectory, "Test3.txt");
-            FileStream fileStream = null;
 
             if (!File.Exists(sFile))
             {
