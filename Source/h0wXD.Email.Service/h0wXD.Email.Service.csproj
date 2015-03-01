@@ -32,8 +32,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ninject">
+      <HintPath>..\..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,18 +47,54 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Daemon\EmailDaemon.cs" />
+    <Compile Include="DataAccess\EmailDao.cs" />
     <Compile Include="EmailService.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EmailService.Designer.cs">
       <DependentUpon>EmailService.cs</DependentUpon>
     </Compile>
+    <Compile Include="Injection\ProductionKernel.cs" />
+    <Compile Include="Injection\ProductionModule.cs" />
+    <Compile Include="Interfaces\IEmailDaemon.cs" />
+    <Compile Include="Interfaces\IEmailDao.cs" />
+    <Compile Include="Interfaces\IEmailManager.cs" />
+    <Compile Include="Managers\EmailManager.cs" />
+    <Compile Include="Managers\LogManager.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Installer\ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Installer\ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TechnicalConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EmailService.resx">
+      <DependentUpon>EmailService.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Installer\ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\h0wXD.Email\h0wXD.Email.csproj">
+      <Project>{a91ca44c-5592-4f61-adda-0c6f1079c512}</Project>
+      <Name>h0wXD.Email</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\h0wXD\h0wXD.csproj">
+      <Project>{e6ec138f-e6a9-4722-a6e4-34b282f98c1f}</Project>
+      <Name>h0wXD</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

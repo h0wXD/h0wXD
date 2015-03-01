@@ -1,25 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ServiceProcess;
+using h0wXD.Email.Service.Injection;
+using Ninject;
 
 namespace h0wXD.Email.Service
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         static void Main()
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] 
+            ServiceBase.Run(new ServiceBase [] 
             { 
-                new EmailService() 
-            };
-            ServiceBase.Run(ServicesToRun);
+                ProductionKernel.Instance.Get<EmailService>()
+            });
         }
     }
 }
