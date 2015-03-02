@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
 using System.Net.Mail;
 using h0wXD.Configuration.Interfaces;
 using h0wXD.Email.Service.Interfaces;
 using h0wXD.IO.Interfaces;
-using h0wXD.Logging;
 using h0wXD.Logging.Interfaces;
 
 namespace h0wXD.Email.Service.Managers
@@ -16,10 +13,11 @@ namespace h0wXD.Email.Service.Managers
         private readonly IDirectoryWatcher m_directoryWatcher;
         private readonly IEmailDao m_emailDao;
         private readonly ILogger m_logger;
-        private readonly SmtpClient m_smtpClient;
         private readonly bool m_bArchiveEmails;
 
-        private readonly string m_sFromAddress;
+        private readonly string m_sMailToAddress;
+        private readonly string m_sMailFromAddress;
+        private readonly string m_sMailFromDisplayName;
         private readonly Dictionary<int, bool> m_processingStatus = new Dictionary<int, bool>();
         
         public EmailManager(IEncryptedConfiguration _config, IDirectoryWatcher _directoryWatcher, IEmailDao _emailDao, ILogger _logger)
@@ -28,18 +26,9 @@ namespace h0wXD.Email.Service.Managers
             m_logger = _logger;
             m_directoryWatcher = _directoryWatcher;
             m_bArchiveEmails = _config.Read(TechnicalConstants.Settings.ArchiveProcessed, false);
-            m_sFromAddress = _config.Read<string>(TechnicalConstants.Settings.SmtpLogin);
-
-            var sSmtpServer = _config.Read<string>(TechnicalConstants.Settings.SmtpServer);
-            var usSmtpPort = _config.Read<ushort>(TechnicalConstants.Settings.SmtpPort);
-            var sSmtpLogin = _config.Read<string>(TechnicalConstants.Settings.SmtpLogin);
-            var sSmtpPassword = _config.Read<string>(TechnicalConstants.Settings.SmtpPassword);
-
-            m_smtpClient = new SmtpClient(sSmtpServer, usSmtpPort);
-            m_smtpClient.EnableSsl = true;
-            m_smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-            m_smtpClient.UseDefaultCredentials = false;
-            m_smtpClient.Credentials = new NetworkCredential(sSmtpLogin, sSmtpPassword);
+            m_sMailToAddress = _config.Read(TechnicalConstants.Settings.MailTo, String.Empty);
+            m_sMailFromAddress = _config.Read(TechnicalConstants.Settings.MailFrom, String.Empty);
+            m_sMailFromDisplayName = _config.Read(TechnicalConstants.Settings.MailFromDisplay, String.Empty);
         }
 
         public void ProcessEmail(string _sFileName)
@@ -47,7 +36,7 @@ namespace h0wXD.Email.Service.Managers
             var iHashCode = _sFileName.GetHashCode();
 
             if (m_emailDao.IsProcessed(_sFileName) ||
-                StartProcessing(iHashCode))
+                !StartProcessing(iHashCode))
             {
                 return;
             }
@@ -56,27 +45,47 @@ namespace h0wXD.Email.Service.Managers
 
             try
             {
-                mailMessage.Load(_sFileName);
-
-                if (!mailMessage.From.Address.Equals(m_sFromAddress, StringComparison.InvariantCultureIgnoreCase))
+                if (mailMessage.Load(_sFileName))
                 {
-                    mailMessage.From = new MailAddress(m_sFromAddress, mailMessage.From.DisplayName);
-                }
+                    m_logger.Info("Parsed file {0}", _sFileName);
+#if DEBUG
+                    // Very little performance boost, as Conditional("DEBUG") does not work when using interfaces.
+                    m_logger.Debug(mailMessage.ToString());
+#endif
 
-                m_smtpClient.Send(mailMessage);
+                    if (!String.IsNullOrEmpty(m_sMailFromAddress))
+                    {
+                        var sDisplayName = String.IsNullOrEmpty(m_sMailFromDisplayName) ? mailMessage.From.DisplayName : m_sMailFromDisplayName;
+                        mailMessage.From = new MailAddress(m_sMailFromAddress, sDisplayName);
+                    }
+                    if (!String.IsNullOrEmpty(m_sMailToAddress))
+                    {
+                        var to = mailMessage.To.Count > 0 ? mailMessage.To[0] : mailMessage.CC.Count > 0 ? mailMessage.CC[0] : mailMessage.Bcc.Count > 0 ? mailMessage.Bcc[0] : null;
+                        if (to != null)
+                        {
+                            mailMessage.To.Clear();
+                            mailMessage.CC.Clear();
+                            mailMessage.Bcc.Clear();
+                            mailMessage.To.Add(new MailAddress(m_sMailToAddress, to.DisplayName));
+                        }
+                    }
 
-                if (m_bArchiveEmails)
-                {
-                    m_emailDao.MoveToArchive(_sFileName);
-                }
-                else
-                {
-                    m_emailDao.Delete(_sFileName);
+                    if (m_emailDao.Send(mailMessage))
+                    {
+                        if (m_bArchiveEmails)
+                        {
+                            m_emailDao.MoveToArchive(_sFileName);
+                        }
+                        else
+                        {
+                            m_emailDao.Delete(_sFileName);
+                        }
+                    }
                 }
             }
             catch (Exception _ex)
             {
-                m_logger.Error("Unable to process email {0}:\n{1}\n{2}", _sFileName, _ex.Message, _ex.StackTrace);
+                m_logger.Error("Unable to parse email {0}:\n{1}\n{2}", _sFileName, _ex.Message, _ex.StackTrace);
                 m_emailDao.MoveToError(_sFileName);
             }
 
@@ -91,10 +100,10 @@ namespace h0wXD.Email.Service.Managers
                     m_processingStatus[_iHashCode] == false)
                 {
                     m_processingStatus[_iHashCode] = true;
-                    return false;
+                    return true;
                 }
 
-                return true;
+                return false;
             }
         }
 

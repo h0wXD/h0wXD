@@ -11,6 +11,9 @@ namespace h0wXD.Email.Service
             public const string SmtpPort = "SmtpPort";
             public const string SmtpLogin = "SmtpLogin";
             public const string SmtpPassword = "SmtpPassword";
+            public const string MailTo = "MailTo";
+            public const string MailFrom = "MailFrom";
+            public const string MailFromDisplay = "MailFromDisplay";
         }
         public const string ErrorFolder = "Error";
         public const string ArchiveFolder = "Archive";

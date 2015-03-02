@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using h0wXD.Logging.Behaviors;
+using System.Diagnostics;
 using h0wXD.Logging.Behaviors.Interfaces;
 using h0wXD.Logging.Interfaces;
 
@@ -29,6 +29,7 @@ namespace h0wXD.Logging
             InternalWrite(LogType.Normal, _sMessage, _args);
         }
 
+        //[Conditional("DEBUG"), DebuggerStepThrough]
         public void Debug(string _sMessage, params object [] _args)
         {
 #if DEBUG

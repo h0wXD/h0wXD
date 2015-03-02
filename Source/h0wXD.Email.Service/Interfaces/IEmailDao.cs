@@ -1,4 +1,5 @@
-﻿
+﻿using System.Net.Mail;
+
 namespace h0wXD.Email.Service.Interfaces
 {
     public interface IEmailDao
@@ -8,5 +9,6 @@ namespace h0wXD.Email.Service.Interfaces
         void MoveToError(string _sEmailFile);
         void MoveToArchive(string _sEmailFile);
         void Delete(string _sEmailFile);
+        bool Send(MailMessage _mailMessage);
     }
 }
