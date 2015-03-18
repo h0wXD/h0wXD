@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using h0wXD.Email.Service.TestApp.Injection;
+using h0wXD.Email.Service.Injection;
 using Ninject;
 
 namespace h0wXD.Email.Service.TestApp

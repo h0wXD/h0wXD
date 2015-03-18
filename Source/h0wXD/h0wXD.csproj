@@ -43,8 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\ReverseMap.cs" />
     <Compile Include="Configuration\EncryptedConfiguration.cs" />
     <Compile Include="Configuration\Interfaces\IEncryptedConfiguration.cs" />
+    <Compile Include="Diagnostics\Domain\ProcessArguments.cs" />
+    <Compile Include="Diagnostics\Domain\ProcessOutput.cs" />
+    <Compile Include="Diagnostics\Interfaces\IStealthProcess.cs" />
+    <Compile Include="Diagnostics\StealthProcess.cs" />
+    <Compile Include="Environment\Helpers\EnvironmentHelper.cs" />
     <Compile Include="IO\CsvFileReader.cs" />
     <Compile Include="IO\DirectoryWatcher.cs" />
     <Compile Include="IO\Domain\WatchDirectory.cs" />

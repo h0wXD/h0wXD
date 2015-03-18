@@ -52,7 +52,7 @@ namespace h0wXD.Email.Service.TestApp
             }
         }
 
-        private void EmailServiceForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void EmailServiceForm_FormClosing(object _sender, FormClosingEventArgs _e)
         {
             m_thread.Abort();
         }
