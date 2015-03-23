@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Net.Mail;
 using h0wXD.Configuration.Interfaces;
+using h0wXD.Email.Interfaces;
 using h0wXD.Email.Service.Interfaces;
 using h0wXD.IO.Interfaces;
 using h0wXD.Logging.Interfaces;
+using IEmailDao = h0wXD.Email.Service.Interfaces.IEmailDao;
 
 namespace h0wXD.Email.Service.Managers
 {
@@ -12,6 +14,7 @@ namespace h0wXD.Email.Service.Managers
     {
         private readonly IDirectoryWatcher m_directoryWatcher;
         private readonly IEmailDao m_emailDao;
+        private readonly IEmailMessageParser m_emailMessageParser;
         private readonly ILogger m_logger;
         private readonly bool m_bArchiveEmails;
 
@@ -20,9 +23,10 @@ namespace h0wXD.Email.Service.Managers
         private readonly string m_sMailFromDisplayName;
         private readonly Dictionary<int, bool> m_processingStatus = new Dictionary<int, bool>();
         
-        public EmailManager(IConfiguration _config, IDirectoryWatcher _directoryWatcher, IEmailDao _emailDao, ILogger _logger)
+        public EmailManager(IConfiguration _config, IDirectoryWatcher _directoryWatcher, IEmailDao _emailDao, IEmailMessageParser _emailMessageParser, ILogger _logger)
         {
             m_emailDao = _emailDao;
+            m_emailMessageParser = _emailMessageParser;
             m_logger = _logger;
             m_directoryWatcher = _directoryWatcher;
             m_bArchiveEmails = _config.Read(TechnicalConstants.Settings.ArchiveProcessed, false);
@@ -41,45 +45,43 @@ namespace h0wXD.Email.Service.Managers
                 return;
             }
 
-            var mailMessage = m_emailDao.Load(_sFileName);
-
             try
             {
-                if (mailMessage != null)
-                {
-                    m_logger.Info("Parsed file {0}", _sFileName);
+                var sFileContents = m_emailDao.Load(_sFileName);
+                var emailMessage = m_emailMessageParser.Parse(sFileContents);
+
+                m_logger.Info("Parsed file {0}", _sFileName);
 #if DEBUG
-                    // Very little performance boost, as Conditional("DEBUG") does not work when using interfaces.
-                    m_logger.Debug(mailMessage.ToString());
+                // Very little performance boost, as Conditional("DEBUG") does not work when using interfaces.
+                m_logger.Debug(mailMessage.ToString());
 #endif
 
-                    if (!String.IsNullOrEmpty(m_sMailFromAddress))
+                if (!String.IsNullOrEmpty(m_sMailFromAddress))
+                {
+                    var sDisplayName = String.IsNullOrEmpty(m_sMailFromDisplayName) ? emailMessage.From.DisplayName : m_sMailFromDisplayName;
+                    emailMessage.From = new MailAddress(m_sMailFromAddress, sDisplayName);
+                }
+                if (!String.IsNullOrEmpty(m_sMailToAddress))
+                {
+                    var to = emailMessage.To.Count > 0 ? emailMessage.To[0] : emailMessage.CC.Count > 0 ? emailMessage.CC[0] : emailMessage.Bcc.Count > 0 ? emailMessage.Bcc[0] : null;
+                    if (to != null)
                     {
-                        var sDisplayName = String.IsNullOrEmpty(m_sMailFromDisplayName) ? mailMessage.From.DisplayName : m_sMailFromDisplayName;
-                        mailMessage.From = new MailAddress(m_sMailFromAddress, sDisplayName);
+                        emailMessage.To.Clear();
+                        emailMessage.CC.Clear();
+                        emailMessage.Bcc.Clear();
+                        emailMessage.To.Add(new MailAddress(m_sMailToAddress, to.DisplayName));
                     }
-                    if (!String.IsNullOrEmpty(m_sMailToAddress))
-                    {
-                        var to = mailMessage.To.Count > 0 ? mailMessage.To[0] : mailMessage.CC.Count > 0 ? mailMessage.CC[0] : mailMessage.Bcc.Count > 0 ? mailMessage.Bcc[0] : null;
-                        if (to != null)
-                        {
-                            mailMessage.To.Clear();
-                            mailMessage.CC.Clear();
-                            mailMessage.Bcc.Clear();
-                            mailMessage.To.Add(new MailAddress(m_sMailToAddress, to.DisplayName));
-                        }
-                    }
+                }
 
-                    if (m_emailDao.Send(mailMessage))
+                if (m_emailDao.Send(emailMessage))
+                {
+                    if (m_bArchiveEmails)
                     {
-                        if (m_bArchiveEmails)
-                        {
-                            m_emailDao.MoveToArchive(_sFileName);
-                        }
-                        else
-                        {
-                            m_emailDao.Delete(_sFileName);
-                        }
+                        m_emailDao.MoveToArchive(_sFileName);
+                    }
+                    else
+                    {
+                        m_emailDao.Delete(_sFileName);
                     }
                 }
             }

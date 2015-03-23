@@ -4,8 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using h0wXD.Configuration.Interfaces;
-using h0wXD.Email.Service.Interfaces;
 using h0wXD.Logging.Interfaces;
+using IEmailDao = h0wXD.Email.Service.Interfaces.IEmailDao;
 
 namespace h0wXD.Email.Service.DataAccess
 {
@@ -100,11 +100,9 @@ namespace h0wXD.Email.Service.DataAccess
             }
         }
 
-        public MailMessage Load(string _sFileName)
+        public string Load(string _sFileName)
         {
-            var mailMessage = new MailMessage();
-
-            return mailMessage.Load(_sFileName) ? mailMessage : null;
+            return File.ReadAllText(_sFileName);
         }
     }
 }
