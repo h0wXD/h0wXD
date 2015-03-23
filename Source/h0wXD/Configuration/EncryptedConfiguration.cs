@@ -33,7 +33,7 @@ namespace h0wXD.Configuration
         /// <param name="_sConfigurationKey">Key to read.</param>
         /// <param name="_defaultValue">Default value to return.</param>
         /// <returns>Value of the configuration key.</returns>
-        public T Read<T>(string _sConfigurationKey, T _defaultValue = default(T))
+        public new T Read<T>(string _sConfigurationKey, T _defaultValue = default(T))
         {
             if (m_section.SectionInformation.IsProtected)
             {
@@ -48,7 +48,7 @@ namespace h0wXD.Configuration
         /// </summary>
         /// <param name="_sConfigurationKey">The configuration key to write to.</param>
         /// <param name="_value">The value to write</param>
-        public void Write(string _sConfigurationKey, object _value)
+        public new void Write(string _sConfigurationKey, object _value)
         {
             if (m_section.SectionInformation.IsProtected)
             {
@@ -61,7 +61,7 @@ namespace h0wXD.Configuration
         /// <summary>
         /// Saves the edited configuration.
         /// </summary>
-        public void Save()
+        public new void Save()
         {
             if (!m_section.SectionInformation.IsProtected &&
                 !m_section.SectionInformation.IsLocked)
