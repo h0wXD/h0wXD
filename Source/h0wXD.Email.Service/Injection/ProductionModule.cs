@@ -16,7 +16,7 @@ namespace h0wXD.Email.Service.Injection
         public override void Load()
         {
             Bind<ILogger>().To<LogManager>().InSingletonScope();
-            Bind<IEncryptedConfiguration>().To<EncryptedConfiguration>().InSingletonScope();
+            Bind<IConfiguration>().To<EncryptedConfiguration>().InSingletonScope();
             Bind<IDirectoryWatcher>().To<DirectoryWatcher>().InSingletonScope();
             Bind<IEmailDaemon>().To<EmailDaemon>().InSingletonScope();
             Bind<IEmailManager>().To<EmailManager>().InSingletonScope();

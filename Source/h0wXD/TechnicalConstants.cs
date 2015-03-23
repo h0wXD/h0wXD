@@ -5,6 +5,7 @@ namespace h0wXD
     {
         public class IO
         {
+            public const string FileMaskAny = "*.*";
             public class CsvFileReader
             {
                 public class Exceptions

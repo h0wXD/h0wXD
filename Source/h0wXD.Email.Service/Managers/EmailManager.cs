@@ -20,7 +20,7 @@ namespace h0wXD.Email.Service.Managers
         private readonly string m_sMailFromDisplayName;
         private readonly Dictionary<int, bool> m_processingStatus = new Dictionary<int, bool>();
         
-        public EmailManager(IEncryptedConfiguration _config, IDirectoryWatcher _directoryWatcher, IEmailDao _emailDao, ILogger _logger)
+        public EmailManager(IConfiguration _config, IDirectoryWatcher _directoryWatcher, IEmailDao _emailDao, ILogger _logger)
         {
             m_emailDao = _emailDao;
             m_logger = _logger;
@@ -41,11 +41,11 @@ namespace h0wXD.Email.Service.Managers
                 return;
             }
 
-            var mailMessage = new MailMessage();
+            var mailMessage = m_emailDao.Load(_sFileName);
 
             try
             {
-                if (mailMessage.Load(_sFileName))
+                if (mailMessage != null)
                 {
                     m_logger.Info("Parsed file {0}", _sFileName);
 #if DEBUG

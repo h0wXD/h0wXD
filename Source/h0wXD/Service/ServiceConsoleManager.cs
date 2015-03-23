@@ -37,7 +37,7 @@ namespace h0wXD.Service
 
             if (sMessage != String.Empty)
             {
-                Console.WriteLine(sMessage.Replace("|", Environment.NewLine));
+                Console.WriteLine(sMessage.Replace("|", System.Environment.NewLine));
                 return true;
             }
 
@@ -53,7 +53,7 @@ namespace h0wXD.Service
                 TechnicalConstants.Service.UninstallParameter,
                 TechnicalConstants.Service.StartParameter,
                 TechnicalConstants.Service.StopParameter);
-            Console.WriteLine(sMessage.Replace("|", Environment.NewLine));
+            Console.WriteLine(sMessage.Replace("|", System.Environment.NewLine));
         }
     }
 }

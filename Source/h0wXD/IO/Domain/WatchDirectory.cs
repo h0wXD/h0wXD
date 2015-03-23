@@ -14,7 +14,7 @@ namespace h0wXD.IO.Domain
             WatchSubDirectories = _bWatchSubDirectories;
         }
         
-        public WatchDirectory(string _sPath, bool _bWatchSubDirectories = false, string _sFileMask = "*.*") :
+        public WatchDirectory(string _sPath, bool _bWatchSubDirectories = false, string _sFileMask = TechnicalConstants.IO.FileMaskAny) :
             this(_sPath, _sFileMask, _bWatchSubDirectories)
         {
         }

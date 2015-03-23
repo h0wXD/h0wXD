@@ -1,6 +1,4 @@
-﻿using System;
-using h0wXD.Configuration.Interfaces;
-using System.IO;
+﻿using SysConf = System.Configuration;
 
 namespace h0wXD.Configuration
 {
@@ -8,12 +6,10 @@ namespace h0wXD.Configuration
     /// EncryptedConfiguration allows reading and writing of system level encryption.
     /// Existing configuration automatically encrypts the configuration on first run if it is unencrypted.
     /// Settings.settings files should be deleted from new Form applications (and others)
-	/// Just use App.config and let it be deployed with exe name.config
+	/// Just configure App.config and deploy it with the compiled executable name.config
     /// </summary>
-    public class EncryptedConfiguration : IEncryptedConfiguration
+    public class EncryptedConfiguration : Configuration
     {
-        private readonly System.Configuration.Configuration m_configuration;
-        private readonly System.Configuration.ClientSettingsSection m_section;
         private readonly string m_sConfigurationEncryptionProvider;
 
         /// <summary>
@@ -23,11 +19,6 @@ namespace h0wXD.Configuration
         public EncryptedConfiguration(string _sConfigurationEncryptionProvider = "RsaProtectedConfigurationProvider")
         {
             m_sConfigurationEncryptionProvider = _sConfigurationEncryptionProvider;
-
-            m_configuration = System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.None);
-            var sConfigSectionName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName).Replace(".vshost", "");
-
-            m_section = (System.Configuration.ClientSettingsSection)m_configuration.GetSection("userSettings/" + sConfigSectionName + ".Settings");
 
             if (!m_section.SectionInformation.IsProtected)
             {
@@ -49,26 +40,7 @@ namespace h0wXD.Configuration
                 m_section.SectionInformation.UnprotectSection();
             }
             
-            var settingElement = m_section.Settings.Get(_sConfigurationKey);
-
-            if (settingElement != null)
-            {
-                try
-                {
-                    var value = ((System.Configuration.SettingValueElement) (settingElement.ElementInformation.Properties["value"].Value)).ValueXml.InnerText;
-
-                    return (T) Convert.ChangeType(value, typeof (T));
-                }
-                catch (Exception)
-                {
-                    if (_defaultValue.Equals(default(T)))
-                    {
-                        throw;
-                    }
-                }
-            }
-
-            return _defaultValue;
+            return base.Read(_sConfigurationKey, _defaultValue);
         }
 
         /// <summary>
@@ -83,12 +55,7 @@ namespace h0wXD.Configuration
                 m_section.SectionInformation.UnprotectSection();
             }
             
-            var settingElement = m_section.Settings.Get(_sConfigurationKey);
-
-            if (settingElement != null)
-            {
-                ((System.Configuration.SettingValueElement)(settingElement.ElementInformation.Properties["value"].Value)).ValueXml.InnerText = _value.ToString();
-            }
+            base.Write(_sConfigurationKey, _value);
         }
 
         /// <summary>
@@ -102,7 +69,7 @@ namespace h0wXD.Configuration
                 m_section.SectionInformation.ProtectSection(m_sConfigurationEncryptionProvider);
             }
 
-            m_configuration.Save();
+            base.Save();
         }
     }
 }

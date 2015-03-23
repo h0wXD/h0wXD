@@ -13,7 +13,7 @@ namespace h0wXD.Email.Service.Daemon
         private readonly IDirectoryWatcher m_directoryWatcher;
         private readonly ILogger m_logger;
 
-        public EmailDaemon(IEncryptedConfiguration _config, IEmailManager _emailManager, IDirectoryWatcher _directoryWatcher, ILogger _logger)
+        public EmailDaemon(IConfiguration _config, IEmailManager _emailManager, IDirectoryWatcher _directoryWatcher, ILogger _logger)
         {
             m_emailManager = _emailManager;
             m_directoryWatcher = _directoryWatcher;

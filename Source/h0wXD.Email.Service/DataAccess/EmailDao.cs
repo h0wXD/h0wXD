@@ -16,7 +16,7 @@ namespace h0wXD.Email.Service.DataAccess
         private readonly string m_sPathToArchive;
         private readonly SmtpClient m_smtpClient;
 
-        public EmailDao(IEncryptedConfiguration _config, ILogger _logger)
+        public EmailDao(IConfiguration _config, ILogger _logger)
         {
             m_logger = _logger;
             var sDropFolderPath = _config.Read<string>(TechnicalConstants.Settings.DropFolder);
@@ -98,6 +98,13 @@ namespace h0wXD.Email.Service.DataAccess
                 m_logger.Error("Unable to send email {0}:\n{1}\n{2}", _ex.Message, _ex.StackTrace);
                 return false;
             }
+        }
+
+        public MailMessage Load(string _sFileName)
+        {
+            var mailMessage = new MailMessage();
+
+            return mailMessage.Load(_sFileName) ? mailMessage : null;
         }
     }
 }

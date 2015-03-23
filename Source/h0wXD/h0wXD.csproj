@@ -44,8 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\ReverseMap.cs" />
+    <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Configuration\EncryptedConfiguration.cs" />
-    <Compile Include="Configuration\Interfaces\IEncryptedConfiguration.cs" />
+    <Compile Include="Configuration\Interfaces\IConfiguration.cs" />
     <Compile Include="Diagnostics\Domain\ProcessArguments.cs" />
     <Compile Include="Diagnostics\Domain\ProcessOutput.cs" />
     <Compile Include="Diagnostics\Interfaces\IStealthProcess.cs" />

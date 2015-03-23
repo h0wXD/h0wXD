@@ -1,7 +1,7 @@
 ﻿
 namespace h0wXD.Configuration.Interfaces
 {
-    public interface IEncryptedConfiguration
+    public interface IConfiguration
     {
         T Read<T>(string _sConfigKey, T _defaultValue = default(T));
 

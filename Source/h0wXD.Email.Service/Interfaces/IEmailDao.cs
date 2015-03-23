@@ -10,5 +10,6 @@ namespace h0wXD.Email.Service.Interfaces
         void MoveToArchive(string _sEmailFile);
         void Delete(string _sEmailFile);
         bool Send(MailMessage _mailMessage);
+        MailMessage Load(string _sFileName);
     }
 }

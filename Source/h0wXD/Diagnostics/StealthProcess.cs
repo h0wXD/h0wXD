@@ -1,6 +1,7 @@
 ﻿using h0wXD.Diagnostics.Interfaces;
 using h0wXD.Diagnostics.Domain;
 using System.Text;
+using System.Diagnostics;
 
 namespace h0wXD.Diagnostics
 {
@@ -8,9 +9,9 @@ namespace h0wXD.Diagnostics
     {
         public ProcessOutput Execute(ProcessArguments _processArguments)
         {
-            using (var process = new System.Diagnostics.Process())
+            using (var process = new Process())
             {
-                process.StartInfo = new System.Diagnostics.ProcessStartInfo
+                process.StartInfo = new ProcessStartInfo
                 {
                     FileName = _processArguments.File,
                     Arguments = _processArguments.Arguments,
