@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ninject">
+      <HintPath>..\..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,11 +44,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\DropEmailConfiguration.cs" />
+    <Compile Include="Injection\ProductionKernel.cs" />
+    <Compile Include="Injection\ProductionModule.cs" />
+    <Compile Include="Managers\LogManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TechnicalConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\h0wXD.Email\h0wXD.Email.csproj">
+      <Project>{a91ca44c-5592-4f61-adda-0c6f1079c512}</Project>
+      <Name>h0wXD.Email</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\h0wXD\h0wXD.csproj">
+      <Project>{e6ec138f-e6a9-4722-a6e4-34b282f98c1f}</Project>
+      <Name>h0wXD</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
