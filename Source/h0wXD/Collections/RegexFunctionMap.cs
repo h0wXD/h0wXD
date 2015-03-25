@@ -5,23 +5,34 @@ using System.Text.RegularExpressions;
 
 namespace h0wXD.Collections
 {
-    public class ReverseMap : IEnumerable<KeyValuePair<int, ReverseMap.Entry>>, IEnumerable
+    public class RegexFunctionMap : IEnumerable<KeyValuePair<int, RegexFunctionMap.Entry>>, IEnumerable
     {
         public class Entry
         {
             private Match m_match;
-            private Func<Match, string> m_valueFunc;
+            private readonly Func<Match, string> m_valueFunction;
 
             public Regex Regex { get; private set; }
-            public string Value { get { return m_valueFunc(m_match); } }
+
+            public string Value
+            {
+                get
+                {
+                    if (m_match.Groups.Count == 0)
+                    {
+                        throw new InvalidOperationException("Content did not match the Regex pattern. No Regex groups have been found.");
+                    }
+                    return m_valueFunction(m_match);
+                }
+            }
 
             public Entry(Regex _regex, Func<Match, string> _value)
             {
                 Regex = _regex;
-                m_valueFunc = _value;
+                m_valueFunction = _value;
             }
 
-            public void Match(string _sContent)
+            internal void Match(string _sContent)
             {
                 m_match = Regex.Match(_sContent);
             }
@@ -29,7 +40,7 @@ namespace h0wXD.Collections
 
         private readonly Dictionary<int, Entry> m_map;
 
-        public ReverseMap()
+        public RegexFunctionMap()
         {
             m_map = new Dictionary<int, Entry>();
         }
@@ -47,13 +58,18 @@ namespace h0wXD.Collections
             }
         }
 
+        public void Clear()
+        {
+            m_map.Clear();
+        }
+
         public string this[int _iKey]
         {
             get
             {
                 if (!m_map.ContainsKey(_iKey))
                 {
-                    return null;
+                    throw new KeyNotFoundException("Couldn't find key " + _iKey + " in collection.");
                 }
                 return m_map[_iKey].Value;
             }

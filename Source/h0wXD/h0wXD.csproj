@@ -43,7 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collections\ReverseMap.cs" />
+    <Compile Include="Collections\IMap.cs" />
+    <Compile Include="Collections\Map.cs" />
+    <Compile Include="Collections\RegexFunctionMap.cs" />
     <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Configuration\EncryptedConfiguration.cs" />
     <Compile Include="Configuration\Interfaces\IConfiguration.cs" />
