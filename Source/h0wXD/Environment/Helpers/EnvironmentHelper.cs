@@ -2,7 +2,7 @@
 
 namespace h0wXD.Environment.Helpers
 {
-    public class EnvironmentHelper
+    public static class EnvironmentHelper
     {
         public static T GetEnvironmentVariable<T>(string _sKey, T _defaultValue = default(T))
         {

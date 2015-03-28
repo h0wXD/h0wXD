@@ -54,9 +54,13 @@
     <Compile Include="Diagnostics\Interfaces\IStealthProcess.cs" />
     <Compile Include="Diagnostics\StealthProcess.cs" />
     <Compile Include="Environment\Helpers\EnvironmentHelper.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="IO\CsvFileReader.cs" />
     <Compile Include="IO\DirectoryWatcher.cs" />
     <Compile Include="IO\Domain\WatchDirectory.cs" />
+    <Compile Include="IO\Helpers\DirectoryHelper.cs" />
+    <Compile Include="IO\Helpers\FileHelper.cs" />
+    <Compile Include="IO\Junction.cs" />
     <Compile Include="IO\Interfaces\ICsvFileReader.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="IO\Interfaces\IDirectoryWatcher.cs" />

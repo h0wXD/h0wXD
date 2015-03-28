@@ -1,10 +1,17 @@
 ﻿
 namespace h0wXD
 {
-    public class TechnicalConstants
+    public abstract class TechnicalConstants
     {
-        public class IO
+        public abstract class Diagnostics
         {
+            public const string DoubleQuote = "\"";
+            public const int ExitCodeSuccess = 0;
+        }
+
+        public abstract class IO
+        {
+            public const string MaskAny = "*";
             public const string FileMaskAny = "*.*";
             public class CsvFileReader
             {
@@ -16,7 +23,7 @@ namespace h0wXD
             }
         }
 
-        public class Service
+        public abstract class Service
         {
             public const string InstallParameter = "-install";
             public const string UninstallParameter = "-uninstall";

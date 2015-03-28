@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using h0wXD.Logging.Behaviors.Interfaces;
 using h0wXD.Logging.Interfaces;
 

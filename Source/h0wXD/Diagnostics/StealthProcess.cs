@@ -49,5 +49,22 @@ namespace h0wXD.Diagnostics
                 };
             }
         }
+
+        public ProcessOutput Execute(string _sFile, params string [] _sArgumentArray)
+        {
+            var stringBuilder = new StringBuilder(128);
+
+            foreach (var sArgument in _sArgumentArray)
+            {
+                stringBuilder.Append(sArgument);
+                stringBuilder.Append(" ");
+            }
+
+            return Execute(new ProcessArguments()
+            {
+                File = _sFile, 
+                Arguments = stringBuilder.ToString()
+            });
+        }
     }
 }
