@@ -50,35 +50,25 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="IO\CsvFileReaderTest.cs" />
-    <Compile Include="IO\DirectoryWatcherTest.cs" />
-    <Compile Include="Logging\TestLogger.cs" />
-    <Compile Include="Logging\TestLoggerTest.cs" />
+    <Compile Include="CollectionTests\ElementTests\RegexFunctionElementTest.cs" />
+    <Compile Include="CollectionTests\RegexFunctionMapTest.cs" />
+    <Compile Include="CollectionTests\MapTest.cs" />
+    <Compile Include="Helpers\EnumerableHelper.cs" />
+    <Compile Include="EnvironmentTests\HelperTests\EnvironmentHelperTests.cs" />
+    <Compile Include="HelperTests\StringHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Collections\TupleListTest.cs" />
-    <Compile Include="ExtensionMethodsTest.cs" />
+    <Compile Include="CollectionTests\TupleListTest.cs" />
+    <Compile Include="ExtensionMethodsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\h0wXD\h0wXD.csproj">
       <Project>{e6ec138f-e6a9-4722-a6e4-34b282f98c1f}</Project>
-      <Name>h0wXD.Common</Name>
+      <Name>h0wXD</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="UnitTestData\CommaCommentCsvFileUTF8.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="UnitTestData\SemicolonCsvFileUnicode.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="UnitTestData\CommaCsvFileUTF8.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="UnitTestData\MixedSpacesQuotesCsvFileUnicode.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Folder Include="Repositories\Memory\" />
   </ItemGroup>
-  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
