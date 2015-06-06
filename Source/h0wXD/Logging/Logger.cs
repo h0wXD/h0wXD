@@ -7,77 +7,67 @@ namespace h0wXD.Logging
 {
     public class Logger : ILogger
     {
-        private readonly List<ILogToBehavior> m_behaviorList;
-        public string LastMessage { get; private set; }
+        private readonly List<ILogToBehavior> _logBehaviours;
 
-        public event EventHandler<LogEventArgs> Log;
-        public event EventHandler<string> LogMessage;
+        public event EventHandler<LogEventArgs> Log = delegate { };
+        public event EventHandler<string> LogMessage = delegate { };
         
         public Logger()
         {
-            m_behaviorList = new List<ILogToBehavior>();
+            _logBehaviours = new List<ILogToBehavior>();
         }
 
-        public void AddBehavior(ILogToBehavior _behavior)
+        public void AddBehavior(ILogToBehavior behavior)
         {
-            m_behaviorList.Add(_behavior);
+            _logBehaviours.Add(behavior);
         }
 
-        public void Write(string _sMessage, params object [] _args)
+        public void Write(string message, params object [] args)
         {
-            InternalWrite(LogType.Normal, _sMessage, _args);
+            InternalWrite(LogType.Normal, message, args);
         }
 
         //[Conditional("DEBUG"), DebuggerStepThrough]
-        public void Debug(string _sMessage, params object [] _args)
+        public void Debug(string message, params object [] args)
         {
 #if DEBUG
-            InternalWrite(LogType.Debug, _sMessage, _args);
+            InternalWrite(LogType.Debug, message, args);
 #endif
         }
 
-        public void Info(string _sMessage, params object [] _args)
+        public void Info(string message, params object [] args)
         {
-            InternalWrite(LogType.Info, _sMessage, _args);
+            InternalWrite(LogType.Info, message, args);
         }
 
-        public void Warning(string _sMessage, params object [] _args)
+        public void Warning(string message, params object [] args)
         {
-            InternalWrite(LogType.Warning, _sMessage, _args);
+            InternalWrite(LogType.Warning, message, args);
         }
 
-        public void Error(string _sMessage, params object [] _args)
+        public void Error(string message, params object [] args)
         {
-            InternalWrite(LogType.Error, _sMessage, _args);
+            InternalWrite(LogType.Error, message, args);
         }
 
-        public void Fatal(string _sMessage, params object [] _args)
+        public void Fatal(string message, params object [] args)
         {
-            InternalWrite(LogType.Fatal, _sMessage, _args);
+            InternalWrite(LogType.Fatal, message, args);
         }
 
-        private void InternalWrite(LogType _logType, string _sMessage, params object[] _args)
+        private void InternalWrite(LogType logType, string message, params object [] args)
         {
             var logEventArgs = new LogEventArgs()
             {
-                LogType = _logType,
+                LogType = logType,
                 Date = DateTime.Now,
-                Message = String.Format(_sMessage, _args)
+                Message = string.Format(message, args)
             };
 
-            LastMessage = logEventArgs.Message;
+            Log(this, logEventArgs);
+            LogMessage(this, logEventArgs.Message);
 
-            if (Log != null)
-            {
-                Log(this, logEventArgs);
-            }
-
-            if (LogMessage != null)
-            {
-                LogMessage(this, logEventArgs.Message);
-            }
-
-            foreach (var logBehavior in m_behaviorList)
+            foreach (var logBehavior in _logBehaviours)
             {
                 logBehavior.Write(logEventArgs);
             }

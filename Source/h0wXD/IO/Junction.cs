@@ -8,34 +8,34 @@ namespace h0wXD.IO
 {
     public static class Junction
     {
-        public static bool Exists(string _sJunctionPath)
+        public static bool Exists(string junctionPath)
         {
-            return Directory.Exists(_sJunctionPath) &&
-                   File.GetAttributes(_sJunctionPath).HasFlag(FileAttributes.ReparsePoint);
+            return Directory.Exists(junctionPath) &&
+                   File.GetAttributes(junctionPath).HasFlag(FileAttributes.ReparsePoint);
         }
 
-        public static void Create(string _sJunctionPath, string _sDestinationPath, bool _bMoveContents = false)
+        public static void Create(string junctionPath, string destinationPath, bool moveContents = false)
         {
-            if (Exists(_sJunctionPath))
+            if (Exists(junctionPath))
             {
                 throw new IOException("Junction already exists!");
             }
 
-            Directory.CreateDirectory(_sDestinationPath);
+            Directory.CreateDirectory(destinationPath);
 
-            if (_bMoveContents)
+            if (moveContents)
             {
-                if (!Directory.Exists(_sJunctionPath))
+                if (!Directory.Exists(junctionPath))
                 {
                     throw new IOException("Directory should exist!");
                 }
 
-                FileHelper.Copy(_sJunctionPath, _sDestinationPath);
-                Directory.Delete(_sJunctionPath, true);
+                FileHelper.Copy(junctionPath, destinationPath);
+                Directory.Delete(junctionPath, true);
             }
             else
             {
-                if (Directory.Exists(_sJunctionPath))
+                if (Directory.Exists(junctionPath))
                 {
                     throw new IOException("Directory should not exist!");
                 }
@@ -43,8 +43,8 @@ namespace h0wXD.IO
 
             var processOutput = new StealthProcess().Execute("mklink", 
                 "/J", 
-                StringHelper.Add(_sDestinationPath, TechnicalConstants.Diagnostics.DoubleQuote), 
-                StringHelper.Add(_sJunctionPath, TechnicalConstants.Diagnostics.DoubleQuote)
+                destinationPath.Wrap(TechnicalConstants.Diagnostics.DoubleQuote), 
+                junctionPath.Wrap(TechnicalConstants.Diagnostics.DoubleQuote)
             );
 
             if (processOutput.ExitCode != TechnicalConstants.Diagnostics.ExitCodeSuccess)
@@ -53,14 +53,14 @@ namespace h0wXD.IO
             }
         }
 
-        public static void Delete(string _sJunctionPath)
+        public static void Delete(string junctionPath)
         {
-            if (!Exists(_sJunctionPath))
+            if (!Exists(junctionPath))
             {
                 throw new IOException("Junction does not exist!");
             }
 
-            var processOutput = new StealthProcess().Execute("rd", StringHelper.Add(_sJunctionPath, TechnicalConstants.Diagnostics.DoubleQuote));
+            var processOutput = new StealthProcess().Execute("rd", junctionPath.Wrap(TechnicalConstants.Diagnostics.DoubleQuote));
 
             if (processOutput.ExitCode != TechnicalConstants.Diagnostics.ExitCodeSuccess)
             {

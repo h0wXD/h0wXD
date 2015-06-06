@@ -5,40 +5,40 @@ namespace h0wXD.Service
 {
     public class ServiceControlManager
     {
-        private readonly ServiceController m_serviceController;
-        protected readonly string m_sServiceLocation;
-        protected readonly string m_sServiceName;
+        private readonly ServiceController _serviceController;
+        protected readonly string ServicePath;
+        protected readonly string ServiceName;
 
-        public ServiceControlManager(string _sServiceLocation, string _sServiceName)
+        public ServiceControlManager(string servicePath, string serviceName)
         {
-            m_sServiceLocation = _sServiceLocation;
-            m_sServiceName = _sServiceName;
-            m_serviceController = new ServiceController(_sServiceName);
+            ServicePath = servicePath;
+            ServiceName = serviceName;
+            _serviceController = new ServiceController(serviceName);
         }
 
         public void Install()
         {
-            ManagedInstallerClass.InstallHelper(new [] { "/LogToConsole=false", m_sServiceLocation });
+            ManagedInstallerClass.InstallHelper(new [] { "/LogToConsole=false", ServicePath });
         }
 
         public void Uninstall()
         {
-            ManagedInstallerClass.InstallHelper(new [] { "/u", "/LogToConsole=false", m_sServiceLocation });
+            ManagedInstallerClass.InstallHelper(new [] { "/u", "/LogToConsole=false", ServicePath });
         }
         
         public void Start()
         {
-            if (m_serviceController.Status == ServiceControllerStatus.Stopped)
+            if (_serviceController.Status == ServiceControllerStatus.Stopped)
             {
-                m_serviceController.Start();
+                _serviceController.Start();
             }
         }
 
         public void Stop()
         {
-            if (m_serviceController.Status == ServiceControllerStatus.Running)
+            if (_serviceController.Status == ServiceControllerStatus.Running)
             {
-                m_serviceController.Stop();
+                _serviceController.Stop();
             }
         }
     }

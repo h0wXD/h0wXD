@@ -4,11 +4,11 @@ namespace h0wXD.IO.Helpers
 {
     public static class DirectoryHelper
     {
-        public static void Copy(string _sSourcePath, string _sDestinationPath, string _sMaskAny = TechnicalConstants.IO.MaskAny, bool _bRecursive = true)
+        public static void Copy(string sourcePath, string destinationPath, string fileMask = TechnicalConstants.IO.MaskAny, bool recursive = true)
         {
-            foreach (var sDirectory in Directory.GetDirectories(_sSourcePath, _sMaskAny, _bRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+            foreach (var sDirectory in Directory.GetDirectories(sourcePath, fileMask, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
             {
-                Directory.CreateDirectory(sDirectory.Replace(_sSourcePath, _sDestinationPath));
+                Directory.CreateDirectory(sDirectory.Replace(sourcePath, destinationPath));
             }
         }
     }

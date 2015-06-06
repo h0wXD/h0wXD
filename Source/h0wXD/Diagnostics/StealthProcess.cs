@@ -7,31 +7,31 @@ namespace h0wXD.Diagnostics
 {
     public class StealthProcess : IStealthProcess
     {
-        public ProcessOutput Execute(ProcessArguments _processArguments)
+        public ProcessOutput Execute(ProcessArguments processArguments)
         {
             using (var process = new Process())
             {
                 process.StartInfo = new ProcessStartInfo
                 {
-                    FileName = _processArguments.File,
-                    Arguments = _processArguments.Arguments,
+                    FileName = processArguments.File,
+                    Arguments = processArguments.Arguments,
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     ErrorDialog = false,
                 };
-                
+
                 var outputBuilder = new StringBuilder(1024);
                 var errorOutputBuilder = new StringBuilder(1024);
 
-                process.OutputDataReceived += (_sender, _args) =>
+                process.OutputDataReceived += (server, e) =>
                 {
-                    outputBuilder.Append(_args.Data);
+                    outputBuilder.Append(e.Data);
                 };
 
-                process.ErrorDataReceived += (_sender, _e) =>
+                process.ErrorDataReceived += (sender, e) =>
                 {
-                    errorOutputBuilder.Append(_e.Data);
+                    errorOutputBuilder.Append(e.Data);
                 };
 
                 process.Start();
@@ -41,8 +41,8 @@ namespace h0wXD.Diagnostics
 
                 return new ProcessOutput
                 {
-                    Arguments = _processArguments.Arguments,
-                    File = _processArguments.File,
+                    Arguments = processArguments.Arguments,
+                    File = processArguments.File,
                     ExitCode = process.ExitCode,
                     Output = outputBuilder.ToString(),
                     ErrorOutput = errorOutputBuilder.ToString()
@@ -50,11 +50,11 @@ namespace h0wXD.Diagnostics
             }
         }
 
-        public ProcessOutput Execute(string _sFile, params string [] _sArgumentArray)
+        public ProcessOutput Execute(string fileName, params string [] args)
         {
             var stringBuilder = new StringBuilder(128);
 
-            foreach (var sArgument in _sArgumentArray)
+            foreach (var sArgument in args)
             {
                 stringBuilder.Append(sArgument);
                 stringBuilder.Append(" ");
@@ -62,7 +62,7 @@ namespace h0wXD.Diagnostics
 
             return Execute(new ProcessArguments()
             {
-                File = _sFile, 
+                File = fileName, 
                 Arguments = stringBuilder.ToString()
             });
         }

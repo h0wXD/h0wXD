@@ -1,57 +1,73 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace h0wXD.Helpers
 {
     public static class StringHelper
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string AddBefore(string _sString, string _sToAdd)
+        public static string Prepend(this string text, string value, StringComparison _comparisonType = StringComparison.CurrentCulture)
         {
-            if (!_sString.StartsWith(_sToAdd))
+            if (!text.StartsWith(value, _comparisonType))
             {
-                _sString = _sToAdd + _sString;
+                text = value + text;
             }
 
-            return _sString;
+            return text;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string AddAfter(string _sString, string _sToAdd)
+        public static string Append(this string text, string value, StringComparison _comparisonType = StringComparison.CurrentCulture)
         {
-            if (!_sString.EndsWith(_sToAdd))
+            if (!text.EndsWith(value, _comparisonType))
             {
-                _sString = _sString + _sToAdd;
+                text = text + value;
             }
 
-            return _sString;
+            return text;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string Add(string _sString, string _sToAdd)
+        public static string Wrap(this string text, string value, StringComparison _comparisonType = StringComparison.CurrentCulture)
         {
-            return AddBefore(AddAfter(_sString, _sToAdd), _sToAdd);
+            return Prepend(Append(text, value, _comparisonType), value, _comparisonType);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string Add(string _sString, string _sToAddBefore, string _sToAddAfter)
+        public static string Wrap(this string text, string valueBefore, string valueAfter, StringComparison _comparisonType = StringComparison.CurrentCulture)
         {
-            return AddBefore(AddAfter(_sString, _sToAddAfter), _sToAddBefore);
+            return Prepend(Append(text, valueAfter, _comparisonType), valueBefore, _comparisonType);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string Strip(string _sString, string _sToStrip)
+        public static string Strip(this string text, string value, StringComparison _comparisonType = StringComparison.CurrentCulture)
         {
-            if (_sString.StartsWith(_sToStrip))
+            if (text.StartsWith(value, _comparisonType))
             {
-                _sString = _sString.Substring(_sToStrip.Length);
+                text = text.Substring(value.Length);
             }
 
-            if (_sString.EndsWith(_sToStrip))
+            if (text.EndsWith(value, _comparisonType))
             {
-                _sString = _sString.Substring(0, _sString.Length - _sToStrip.Length);
+                text = text.Substring(0, text.Length - value.Length);
             }
 
-            return _sString;
+            return text;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool StartsWith(this string text, string value, int minimumMatchCount, StringComparison _comparisonType = StringComparison.CurrentCulture)
+        {
+            minimumMatchCount = Math.Min(text.Length, minimumMatchCount);
+
+            var sTextToMatch = value.Substring(0, Math.Min(value.Length, minimumMatchCount));
+
+            if (value.Length == text.Length)
+            {
+                return value.Equals(text, _comparisonType);
+            }
+
+            return text.StartsWith(sTextToMatch, _comparisonType);
         }
     }
 }

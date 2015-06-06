@@ -1,15 +1,15 @@
 ﻿
 namespace h0wXD
 {
-    public abstract class TechnicalConstants
+    public static class TechnicalConstants
     {
-        public abstract class Diagnostics
+        public static class Diagnostics
         {
             public const string DoubleQuote = "\"";
             public const int ExitCodeSuccess = 0;
         }
 
-        public abstract class IO
+        public static class IO
         {
             public const string MaskAny = "*";
             public const string FileMaskAny = "*.*";
@@ -23,7 +23,7 @@ namespace h0wXD
             }
         }
 
-        public abstract class Service
+        public static class Service
         {
             public const string InstallParameter = "-install";
             public const string UninstallParameter = "-uninstall";

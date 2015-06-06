@@ -6,76 +6,96 @@ namespace h0wXD.Logging.Behaviors
 {
     public class LogToFileBehavior : ILogToBehavior
     {
-        private readonly string m_sDateFormat;
-        private readonly string m_sLogPath;
-        private readonly bool m_bSwapDaily;
-        private StreamWriter m_streamWriter;
-        private DateTime m_initDate;
+        private readonly string _logPath;
+        private StreamWriter _streamWriter;
+        private DateTime _initDate;
 
         public string CurrentFile { get; private set; }
+        public IMessageFormatBehavior MessageFormatBehavior { get; set; }
+        public event EventHandler<DayChangedEventArgs> DayChanged = delegate { };
 
-        public LogToFileBehavior(string _sLogPath = @".\Log", string _sDateFormat = "hh:mm:ss tt", bool _bSwapDaily = false)
+        public LogToFileBehavior(IMessageFormatBehavior messageFormatBehavior, string logPath = @".\Log")
+            : this(null, messageFormatBehavior, logPath)
         {
-            m_sLogPath = _sLogPath;
-            m_sDateFormat = _sDateFormat;
-            m_bSwapDaily = _bSwapDaily;
-            
-            if (!Directory.Exists(m_sLogPath))
-            {
-                Directory.CreateDirectory(m_sLogPath);
-            }
-            
-            m_initDate = DateTime.Now;
-
-            InitStreamWriter();
         }
 
-        public void Write(LogEventArgs _args)
+        public LogToFileBehavior(StreamWriter writer, IMessageFormatBehavior messageFormatBehavior, string logPath = @".\Log")
         {
-            if (m_initDate.DayOfYear !=  _args.Date.DayOfYear)
-            {
-                m_initDate = _args.Date;
+            MessageFormatBehavior = messageFormatBehavior;
+            _logPath = logPath;
+            _initDate = DateTime.Now;
 
-                if (m_bSwapDaily)
+            if (!Directory.Exists(_logPath))
+            {
+                Directory.CreateDirectory(_logPath);
+            }
+
+            StartLogging(writer ?? OpenFile(Path.Combine(_logPath, _initDate.ToString("yyyy-MM-dd_HH-mm-ss")) + ".txt"));
+        }
+
+        public StreamWriter OpenFile(string filePath)
+        {
+            CurrentFile = filePath;
+            return new StreamWriter(CurrentFile, true);
+        }
+
+        public void Write(LogEventArgs args)
+        {
+            if (_initDate.DayOfYear !=  args.Date.DayOfYear)
+            {
+                var eventArgs = new DayChangedEventArgs()
                 {
-                    InitStreamWriter();
+                    Previous = _initDate,
+                    Next = args.Date
+                };
+
+                _initDate = args.Date;
+
+                DayChanged(this, eventArgs);
+
+                if (!string.IsNullOrWhiteSpace(eventArgs.Message))
+                {
+                    _streamWriter.WriteLine(eventArgs.Message);
                 }
-                else
+
+                if (eventArgs.Tag != null)
                 {
-                    m_streamWriter.WriteLine(LogMessageFormatter.FormatDate(m_initDate));
+                    StartLogging((StreamWriter)eventArgs.Tag);
                 }
             }
 
-            m_streamWriter.WriteLine(LogMessageFormatter.Format(_args, m_sDateFormat, _args.Date));
-            m_streamWriter.Flush();
+            _streamWriter.WriteLine(MessageFormatBehavior.FormatMessage(args));
+            _streamWriter.Flush();
         }
-        
-        private void InitStreamWriter()
+
+        public void Close()
         {
-            if (m_streamWriter != null)
+            if (_streamWriter != null)
             {
                 Dispose();
             }
+        }
+        
+        private void StartLogging(StreamWriter writer)
+        {
+            Close();
 
-            CurrentFile = Path.Combine(m_sLogPath, m_initDate.ToString(m_bSwapDaily ? "yyyy-MM-dd" : "yyyy-MM-dd_HH-mm-ss")) + ".txt";
-
-            m_streamWriter = new StreamWriter(CurrentFile, true);
-
-            m_streamWriter.WriteLine(LogMessageFormatter.FormatDate(m_initDate));
+            _streamWriter = writer;
 
             Write(new LogEventArgs()
             {
                 LogType = LogType.Normal,
-                Date = m_initDate,
-                Message = String.Format("Started logging at {0}.", CurrentFile)
+                Date = _initDate,
+                Message = string.Format("Started logging at {0}.", CurrentFile)
             });
         }
         
         public void Dispose()
         {
-            m_streamWriter.Flush();
-            m_streamWriter.Close();
-            m_streamWriter.Dispose();
+            _streamWriter.Flush();
+            _streamWriter.Close();
+            _streamWriter.Dispose();
+            _streamWriter = null;
         }
     }
 }

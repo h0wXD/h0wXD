@@ -6,17 +6,39 @@ namespace h0wXD.Logging.Behaviors
 {
     public class LogToDebugViewBehavior : ILogToBehavior
     {
-        private readonly string m_sDateFormat;
+        private DateTime _initDate;
 
-        public LogToDebugViewBehavior(string _sDateFormat = "")
+        public IMessageFormatBehavior MessageFormatBehavior { get; set; }
+        public event EventHandler<DayChangedEventArgs> DayChanged = delegate { };
+
+        public LogToDebugViewBehavior(IMessageFormatBehavior messageFormatBehavior)
         {
-            m_sDateFormat = _sDateFormat;
+            _initDate = DateTime.Now;
+            MessageFormatBehavior = messageFormatBehavior;
         }
 
-        public void Write(LogEventArgs _args)
+        public void Write(LogEventArgs args)
         {
-            //Trace.WriteLine(LogMessageFormatter.Format(_args, m_sDateFormat, _args.Date));
-            Debug.WriteLine(LogMessageFormatter.Format(_args, m_sDateFormat, _args.Date));
+            if (_initDate.DayOfYear != args.Date.DayOfYear)
+            {
+                var eventArgs = new DayChangedEventArgs()
+                {
+                    Previous =_initDate,
+                    Next = args.Date
+                };
+
+                _initDate = args.Date;
+
+                DayChanged(this, eventArgs);
+
+                if (!string.IsNullOrWhiteSpace(eventArgs.Message))
+                {
+                    Console.WriteLine(eventArgs.Message);
+                }
+            }
+
+            //Trace.WriteLine(MessageFormatBehavior.FormatMessage(args));
+            Debug.WriteLine(MessageFormatBehavior.FormatMessage(args));
         }
     }
 }

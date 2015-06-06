@@ -1,88 +1,75 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using h0wXD.Collections.Elements;
+using h0wXD.Collections.Elements.Interfaces;
+using h0wXD.Collections.Interfaces;
 
 namespace h0wXD.Collections
 {
-    public class RegexFunctionMap : IEnumerable<KeyValuePair<int, RegexFunctionMap.Entry>>, IEnumerable
+    public class RegexFunctionMap<T> : IRegexFunctionMap<T>
     {
-        public class Entry
-        {
-            private Match m_match;
-            private readonly Func<Match, string> m_valueFunction;
-
-            public Regex Regex { get; private set; }
-
-            public string Value
-            {
-                get
-                {
-                    if (m_match.Groups.Count == 0)
-                    {
-                        throw new InvalidOperationException("Content did not match the Regex pattern. No Regex groups have been found.");
-                    }
-                    return m_valueFunction(m_match);
-                }
-            }
-
-            public Entry(Regex _regex, Func<Match, string> _value)
-            {
-                Regex = _regex;
-                m_valueFunction = _value;
-            }
-
-            internal void Match(string _sContent)
-            {
-                m_match = Regex.Match(_sContent);
-            }
-        }
-
-        private readonly Dictionary<int, Entry> m_map;
+        private readonly Dictionary<T, IRegexFunctionElement> _regexFunctionElements;
 
         public RegexFunctionMap()
         {
-            m_map = new Dictionary<int, Entry>();
+            _regexFunctionElements = new Dictionary<T, IRegexFunctionElement>();
         }
 
-        public void Add(int _iKey, Entry _entry)
+        public void Add(T key, IRegexFunctionElement element)
         {
-            m_map[_iKey] = _entry;
+            _regexFunctionElements[key] = element;
         }
 
-        public void Match(string _sContent)
+        public void Add(T key, string pattern, RegexOptions options = RegexOptions.None)
         {
-            foreach (var keypair in m_map)
+            _regexFunctionElements[key] = new RegexFunctionElement(pattern, options);
+        }
+
+        public void Match(string content)
+        {
+            foreach (var keypair in _regexFunctionElements)
             {
-                keypair.Value.Match(_sContent);
+                keypair.Value.Match(content);
             }
         }
 
         public void Clear()
         {
-            m_map.Clear();
+            _regexFunctionElements.Clear();
         }
 
-        public string this[int _iKey]
+        public string this[T key]
         {
             get
             {
-                if (!m_map.ContainsKey(_iKey))
-                {
-                    throw new KeyNotFoundException("Couldn't find key " + _iKey + " in collection.");
-                }
-                return m_map[_iKey].Value;
+                CheckForKey(key);
+                return _regexFunctionElements[key].Value;
             }
         }
 
-        public IEnumerator<KeyValuePair<int, Entry>> GetEnumerator()
+        public IRegexFunctionElement At(T key)
         {
-            return m_map.GetEnumerator();
+            CheckForKey(key);
+            return _regexFunctionElements[key];
+        }
+
+        public IEnumerator<KeyValuePair<T, IRegexFunctionElement>> GetEnumerator()
+        {
+            return _regexFunctionElements.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private void CheckForKey(T key)
+        {
+            if (!_regexFunctionElements.ContainsKey(key))
+            {
+                throw new KeyNotFoundException("Couldn't find element " + key + " in collection.");
+            }
         }
     }
 }

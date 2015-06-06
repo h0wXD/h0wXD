@@ -13,7 +13,7 @@ namespace h0wXD.IO.Interfaces
         string [] CommentTokens { get; set; }
         string [] Delimiters { get; set; }
         void Reset();
-        void Open(string _sFileName, Encoding _encoding);
+        void Open(string fileName, Encoding encoding);
         void Close();
         string ReadLine();
         string [] ReadFields();

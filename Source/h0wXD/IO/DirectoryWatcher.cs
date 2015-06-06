@@ -9,7 +9,7 @@ namespace h0wXD.IO
 {
     public class DirectoryWatcher : IDirectoryWatcher
     {
-        protected readonly List<FileSystemWatcher> m_watchers;
+        protected readonly List<FileSystemWatcher> _watchers;
 
         public event FileSystemEventHandler Created = delegate {};
         public event FileSystemEventHandler Changed = delegate {};
@@ -22,7 +22,7 @@ namespace h0wXD.IO
         public DirectoryWatcher()
         {
             Active = false;
-            m_watchers = new List<FileSystemWatcher>();
+            _watchers = new List<FileSystemWatcher>();
             Directories = new List<WatchDirectory>();
         }
 
@@ -31,57 +31,55 @@ namespace h0wXD.IO
         {
         }
 
-        public DirectoryWatcher(List<WatchDirectory> _directories) :
+        public DirectoryWatcher(List<WatchDirectory> directories) :
             this()
         {
-            if (_directories == null)
+            if (directories == null)
             {
-                throw new ArgumentNullException("_directories");
+                throw new ArgumentNullException("directories");
             }
-            if (_directories.Any(x => x == null))
+            if (directories.Any(x => x == null))
             {
                 throw new ArgumentException("Directories cannot contain null values.");
             }
 
-            Directories = _directories;
-            
-            foreach (var directory in Directories)
+            foreach (var directory in directories)
             {
                 AddDirectory(directory);
             }
         }
 
-        public void AddDirectory(WatchDirectory _directory)
+        public void AddDirectory(WatchDirectory directory)
         {
-            if (_directory == null)
+            if (directory == null)
             {
                 throw new ArgumentNullException("WatchDirectory");
             }
-            if (String.IsNullOrWhiteSpace(_directory.Path))
+            if (String.IsNullOrWhiteSpace(directory.Path))
             {
-                throw new ArgumentException("Path cannot be empty.", "_directory");
+                throw new ArgumentException("Path cannot be empty.", "directory");
             }
-            if (String.IsNullOrWhiteSpace(_directory.FileMask))
+            if (String.IsNullOrWhiteSpace(directory.FileMask))
             {
-                throw new ArgumentException("FileMask cannot be empty.", "_directory");
+                throw new ArgumentException("FileMask cannot be empty.", "directory");
             }
-            if (!Directory.Exists(_directory.Path))
+            if (!Directory.Exists(directory.Path))
             {
-                throw new DirectoryNotFoundException(String.Format("Directory ({0}) does not exist.", _directory.Path));
+                throw new DirectoryNotFoundException(String.Format("Directory ({0}) does not exist.", directory.Path));
             }
             
-            var sFileMasks = _directory.FileMask.Split(';');
+            var fileMasks = directory.FileMask.Split(';');
 
-            foreach (var sFileMask in sFileMasks)
+            foreach (var fileMask in fileMasks)
             {
-                if (m_watchers.Any(x => x.Path == _directory.Path && x.Filter == sFileMask))
+                if (_watchers.Any(x => x.Path == directory.Path && x.Filter == fileMask))
                 {
-                    throw new ArgumentException(String.Format("Directory ({0}) is already being watched.", Path.Combine(_directory.Path, sFileMask)));
+                    throw new ArgumentException(String.Format("Directory ({0}) is already being watched.", Path.Combine(directory.Path, fileMask)));
                 }
 
-                var watcher = new FileSystemWatcher(_directory.Path, sFileMask)
+                var watcher = new FileSystemWatcher(directory.Path, fileMask)
                 {
-                    IncludeSubdirectories = _directory.WatchSubDirectories
+                    IncludeSubdirectories = directory.WatchSubDirectories
                 };
 
                 watcher.Created += FileCreated;
@@ -89,20 +87,20 @@ namespace h0wXD.IO
                 watcher.Deleted += FileDeleted;
                 watcher.Renamed += FileRenamed;
 
-                m_watchers.Add(watcher);
+                _watchers.Add(watcher);
             }
 
-            Directories.Add(_directory);
+            Directories.Add(directory);
         }
 
-        public void AddDirectory(string _sDirectory, string _sFileMask, bool _bWatchSubdirectories = false)
+        public void AddDirectory(string directory, string fileMask, bool watchSubdirectories = false)
         {
-            AddDirectory(new WatchDirectory(_sDirectory, _sFileMask, _bWatchSubdirectories));
+            AddDirectory(new WatchDirectory(directory, fileMask, watchSubdirectories));
         }
 
         public void Start()
         {
-            if (m_watchers.Count == 0)
+            if (_watchers.Count == 0)
             {
                 throw new InvalidOperationException("Cannot start when no directories where added.");
             }
@@ -111,7 +109,7 @@ namespace h0wXD.IO
             {
                 Active = true;
 
-                foreach (var watcher in m_watchers)
+                foreach (var watcher in _watchers)
                 {
                     watcher.EnableRaisingEvents = true;
                 }
@@ -124,31 +122,31 @@ namespace h0wXD.IO
             {
                 Active = false;
 
-                foreach (var watcher in m_watchers)
+                foreach (var watcher in _watchers)
                 {
                     watcher.EnableRaisingEvents = false;
                 }
             }
         }
 
-        private void FileCreated(object _sender, FileSystemEventArgs _e)
+        private void FileCreated(object sender, FileSystemEventArgs e)
         {
-            Created(this, _e);
+            Created(this, e);
         }
 
-        private void FileChanged(object _sender, FileSystemEventArgs _e)
+        private void FileChanged(object sender, FileSystemEventArgs e)
         {
-            Changed(this, _e);
+            Changed(this, e);
         }
 
-        private void FileDeleted(object _sender, FileSystemEventArgs _e)
+        private void FileDeleted(object sender, FileSystemEventArgs e)
         {
-            Deleted(this, _e);
+            Deleted(this, e);
         }
 
-        private void FileRenamed(object _sender, RenamedEventArgs _e)
+        private void FileRenamed(object sender, RenamedEventArgs e)
         {
-            Renamed(this, _e);
+            Renamed(this, e);
         }
     }
 }

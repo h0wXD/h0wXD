@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace h0wXD.Environment.Helpers
 {
     public static class EnvironmentHelper
     {
-        public static T GetEnvironmentVariable<T>(string _sKey, T _defaultValue = default(T))
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T GetEnvironmentVariable<T>(string key, T defaultValue = default(T))
         {
-            var value = System.Environment.GetEnvironmentVariable(_sKey);
+            var value = System.Environment.GetEnvironmentVariable(key);
 
-            if (String.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value))
             {
-                return _defaultValue;
+                return defaultValue;
             }
 
             return (T)Convert.ChangeType(value, typeof(T));

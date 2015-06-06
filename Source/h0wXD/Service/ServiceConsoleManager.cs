@@ -1,43 +1,42 @@
 ﻿using System;
-using System.Reflection;
+using h0wXD.Helpers;
 
 namespace h0wXD.Service
 {
     public class ServiceConsoleManager : ServiceControlManager
     {
-        public ServiceConsoleManager(string _sServiceLocation, string _sServiceName) :
-            base(_sServiceLocation, _sServiceName)
+        public ServiceConsoleManager(string servicePath, string serviceName) :
+            base(servicePath, serviceName)
         {
         }
 
-        public bool HandleCommandlineParameter(string _sParameter)
+        public bool HandleCommandlineParameter(string parameter)
         {
-            var sMessage = String.Empty;
-
-            if (_sParameter.StartsWith(TechnicalConstants.Service.InstallParameter, 2))
+            if (parameter.StartsWith(TechnicalConstants.Service.InstallParameter, 2))
             {
                 Install();
-                sMessage = String.Format("Service {0} has been installed.|Location: {1}", m_sServiceName, m_sServiceLocation);
+                Console.WriteLine("Service {0} has been installed.\nPath: {1}", ServiceName, ServicePath);
+                return true;
             }
-            else if (_sParameter.StartsWith(TechnicalConstants.Service.UninstallParameter, 2))
+            
+            if (parameter.StartsWith(TechnicalConstants.Service.UninstallParameter, 2))
             {
                 Uninstall();
-                sMessage = String.Format("Service {0} has been uninstalled.|Location: {1}", m_sServiceName, m_sServiceLocation);
-            }
-            else if (_sParameter.StartsWith(TechnicalConstants.Service.StopParameter, 4))
-            {
-                Stop();
-                sMessage = String.Format("Service {0} has been stopped.", m_sServiceName);
-            }
-            else if (_sParameter.StartsWith(TechnicalConstants.Service.StartParameter, 2))
-            {
-                Start();
-                sMessage = String.Format("Service {0} has been started.", m_sServiceName);
+                Console.WriteLine("Service {0} has been uninstalled.\nPath: {1}", ServiceName, ServicePath);
+                return true;
             }
 
-            if (sMessage != String.Empty)
+            if (parameter.StartsWith(TechnicalConstants.Service.StopParameter, 4))
             {
-                Console.WriteLine(sMessage.Replace("|", System.Environment.NewLine));
+                Stop();
+                Console.WriteLine("Service {0} has been stopped.", ServiceName);
+                return true;
+            }
+            
+            if (parameter.StartsWith(TechnicalConstants.Service.StartParameter, 2))
+            {
+                Start();
+                Console.WriteLine("Service {0} has been started.", ServiceName);
                 return true;
             }
 
@@ -46,14 +45,12 @@ namespace h0wXD.Service
         
         public void DisplayUsage()
         {
-            var sExeName = AppDomain.CurrentDomain.FriendlyName;
-            var sMessage = String.Format("Usage:|{0} {1}\tInstalls this service.|{0} {2}\tUninstalls this service.|{0} {3}\t\tStarts this service.|{0} {4}\t\tStops this service.", 
-                sExeName, 
+            Console.Write("Usage:\n{0} {1}\tInstalls this service.\n{0} {2}\tUninstalls this service.\n{0} {3}\t\tStarts this service.\n{0} {4}\t\tStops this service.\n",
+                AppDomain.CurrentDomain.FriendlyName,
                 TechnicalConstants.Service.InstallParameter,
                 TechnicalConstants.Service.UninstallParameter,
                 TechnicalConstants.Service.StartParameter,
                 TechnicalConstants.Service.StopParameter);
-            Console.WriteLine(sMessage.Replace("|", System.Environment.NewLine));
         }
     }
 }

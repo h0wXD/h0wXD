@@ -43,12 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collections\IMap.cs" />
+    <Compile Include="Collections\Elements\Interfaces\IRegexFunctionElement.cs" />
+    <Compile Include="Collections\Elements\RegexFunctionElement.cs" />
+    <Compile Include="Collections\Interfaces\IMap.cs" />
+    <Compile Include="Collections\Interfaces\IRegexFunctionMap.cs" />
     <Compile Include="Collections\Map.cs" />
     <Compile Include="Collections\RegexFunctionMap.cs" />
-    <Compile Include="Configuration\Configuration.cs" />
-    <Compile Include="Configuration\EncryptedConfiguration.cs" />
-    <Compile Include="Configuration\Interfaces\IConfiguration.cs" />
+    <Compile Include="Configuration\Settings.cs" />
+    <Compile Include="Configuration\EncryptedSettings.cs" />
+    <Compile Include="Configuration\Interfaces\ISettings.cs" />
+    <Compile Include="Diagnostics\Debug.cs" />
     <Compile Include="Diagnostics\Domain\ProcessArguments.cs" />
     <Compile Include="Diagnostics\Domain\ProcessOutput.cs" />
     <Compile Include="Diagnostics\Interfaces\IStealthProcess.cs" />
@@ -62,7 +66,12 @@
     <Compile Include="IO\Helpers\FileHelper.cs" />
     <Compile Include="IO\Junction.cs" />
     <Compile Include="IO\Interfaces\ICsvFileReader.cs" />
-    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Logging\Behaviors\DateTimeFormatBehavior.cs" />
+    <Compile Include="Logging\Behaviors\MessageFormatBehavior.cs" />
+    <Compile Include="Logging\Helpers\LogTypeHelper.cs" />
+    <Compile Include="Logging\Behaviors\Interfaces\IMessageFormatBehavior.cs" />
+    <Compile Include="Logging\DayChangedEventArgs.cs" />
+    <Compile Include="Net\IPEndPointHelper.cs" />
     <Compile Include="IO\Interfaces\IDirectoryWatcher.cs" />
     <Compile Include="Logging\Behaviors\Interfaces\ILogToBehavior.cs" />
     <Compile Include="Logging\Behaviors\LogToDebugViewBehavior.cs" />
@@ -71,7 +80,7 @@
     <Compile Include="Logging\Interfaces\ILogger.cs" />
     <Compile Include="Logging\LogEventArgs.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Logging\LogMessageFormatter.cs" />
+    <Compile Include="Logging\Behaviors\TimeFormatBehavior.cs" />
     <Compile Include="Logging\LogType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Collections\TupleList.cs" />

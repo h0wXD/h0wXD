@@ -5,11 +5,11 @@ namespace h0wXD.IO.Helpers
 {
 	public static class FileHelper
 	{
-		public static void Copy(string _sSourcePath, string _sDestinationPath, string _sFileMask = TechnicalConstants.IO.FileMaskAny, bool _bRecursive = true)
+		public static void Copy(string sourcePath, string destinationPath, string fileMask = TechnicalConstants.IO.FileMaskAny, bool recursive = true)
 		{
-			foreach (var sFile in Directory.GetFiles(_sSourcePath, _sFileMask, _bRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+			foreach (var sFile in Directory.GetFiles(sourcePath, fileMask, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
 			{
-                var sDestinationFileName = sFile.Replace(_sSourcePath, _sDestinationPath);
+                var sDestinationFileName = sFile.Replace(sourcePath, destinationPath);
                 var sDirectory = Path.GetDirectoryName(sDestinationFileName);
 
                 if (!String.IsNullOrWhiteSpace(sDirectory) &&

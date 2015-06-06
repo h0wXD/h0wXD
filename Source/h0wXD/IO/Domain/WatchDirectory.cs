@@ -7,15 +7,15 @@ namespace h0wXD.IO.Domain
         public string Path { get; private set; }
         public string FileMask { get; private set; }
 
-        public WatchDirectory(string _sPath, string _sFileMask, bool _bWatchSubDirectories = false)
+        public WatchDirectory(string path, string fileMask, bool watchSubDirectories = false)
         {
-            Path = _sPath;
-            FileMask = _sFileMask;
-            WatchSubDirectories = _bWatchSubDirectories;
+            Path = path;
+            FileMask = fileMask;
+            WatchSubDirectories = watchSubDirectories;
         }
-        
-        public WatchDirectory(string _sPath, bool _bWatchSubDirectories = false, string _sFileMask = TechnicalConstants.IO.FileMaskAny) :
-            this(_sPath, _sFileMask, _bWatchSubDirectories)
+
+        public WatchDirectory(string path, bool watchSubDirectories = false, string fileMask = TechnicalConstants.IO.FileMaskAny) :
+            this(path, fileMask, watchSubDirectories)
         {
         }
     }

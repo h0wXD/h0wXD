@@ -11,85 +11,85 @@ namespace h0wXD.IO
     /// </summary>
     public class CsvFileReader : ICsvFileReader
     {
-        private TextFieldParser m_textFieldParser;
-        private bool m_bReadFirstLine;
-        private bool m_bSkipFirstLine;
-        private Encoding m_encoding;
+        private TextFieldParser _textFieldParser;
+        private bool _readFirstLine;
+        private bool _skipFirstLine;
+        private Encoding _encoding;
         
-        public bool EndOfData { get { return m_textFieldParser.EndOfData; } }
+        public bool EndOfData { get { return _textFieldParser.EndOfData; } }
         public int LineNumber { get; private set; }
         public string FileName { get; private set; }
 
         public bool SkipFirstLine
         {
-            get { return m_bSkipFirstLine; }
-            set { m_bSkipFirstLine = value; m_bReadFirstLine = !value; }
+            get { return _skipFirstLine; }
+            set { _skipFirstLine = value; _readFirstLine = !value; }
         }
 
-        private bool m_bTempHasFieldsEnclosedInQuotes = false;
+        private bool _tempHasFieldsEnclosedInQuotes = false;
         public bool HasFieldsEnclosedInQuotes
         {
-            get { return m_textFieldParser.HasFieldsEnclosedInQuotes; } 
+            get { return _textFieldParser.HasFieldsEnclosedInQuotes; } 
             set
             {
-                if (m_textFieldParser == null)
+                if (_textFieldParser == null)
                 {
-                    m_bTempHasFieldsEnclosedInQuotes = value;
+                    _tempHasFieldsEnclosedInQuotes = value;
                 }
                 else
                 {
-                    m_textFieldParser.HasFieldsEnclosedInQuotes = value;
+                    _textFieldParser.HasFieldsEnclosedInQuotes = value;
                 }
             }
         }
 
-        private bool m_bTempTrimWhiteSpace = true;
+        private bool _tempTrimWhiteSpace = true;
         public bool TrimWhiteSpace
         {
-            get { return m_textFieldParser.TrimWhiteSpace; } 
+            get { return _textFieldParser.TrimWhiteSpace; } 
             set
             {
-                if (m_textFieldParser == null)
+                if (_textFieldParser == null)
                 {
-                    m_bTempTrimWhiteSpace = value;
+                    _tempTrimWhiteSpace = value;
                 }
                 else
                 {
-                    m_textFieldParser.TrimWhiteSpace = value;
+                    _textFieldParser.TrimWhiteSpace = value;
                 }
             }
         }
 
-        private string [] m_sTempCommentTokensArray = {"#"};
+        private string [] _tempCommentTokensArray = {"#"};
         public string [] CommentTokens
         {
-            get { return m_textFieldParser.CommentTokens; } 
+            get { return _textFieldParser.CommentTokens; } 
             set
             {
-                if (m_textFieldParser == null)
+                if (_textFieldParser == null)
                 {
-                    m_sTempCommentTokensArray = value;
+                    _tempCommentTokensArray = value;
                 }
                 else
                 {
-                    m_textFieldParser.CommentTokens = value;
+                    _textFieldParser.CommentTokens = value;
                 }
             }
         }
         
-        private string [] m_sTempDelimitersArray = {","};
+        private string [] _tempDelimitersArray = {","};
         public string [] Delimiters
         {
-            get { return m_textFieldParser.Delimiters; } 
+            get { return _textFieldParser.Delimiters; } 
             set
             {
-                if (m_textFieldParser == null)
+                if (_textFieldParser == null)
                 {
-                    m_sTempDelimitersArray = value;
+                    _tempDelimitersArray = value;
                 }
                 else
                 {
-                    m_textFieldParser.Delimiters = value;
+                    _textFieldParser.Delimiters = value;
                 }
             }
         }
@@ -99,51 +99,51 @@ namespace h0wXD.IO
             SkipFirstLine = false;
         }
 
-        public void Open(string _sFileName, Encoding _encoding)
+        public void Open(string fileName, Encoding encoding)
         {
-            if (!File.Exists(_sFileName))
+            if (!File.Exists(fileName))
             {
-                throw new FileNotFoundException(TechnicalConstants.IO.CsvFileReader.Exceptions.FileNotFound, _sFileName);
+                throw new FileNotFoundException(TechnicalConstants.IO.CsvFileReader.Exceptions.FileNotFound, fileName);
             }
 
-            m_encoding = _encoding;
-            FileName = _sFileName;
+            _encoding = encoding;
+            FileName = fileName;
             Reset();
         }
 
         public void Close()
         {
-            if (m_textFieldParser != null)
+            if (_textFieldParser != null)
             {
-                m_textFieldParser.Close();
-                m_textFieldParser = null;
+                _textFieldParser.Close();
+                _textFieldParser = null;
             }
         }
 
         public void Reset()
         {
-            if (m_textFieldParser == null)
+            if (_textFieldParser == null)
             {
-                m_textFieldParser = new TextFieldParser(FileName, m_encoding)
+                _textFieldParser = new TextFieldParser(FileName, _encoding)
                 {
-                    CommentTokens = m_sTempCommentTokensArray, 
-                    Delimiters = m_sTempDelimitersArray, 
-                    HasFieldsEnclosedInQuotes = m_bTempHasFieldsEnclosedInQuotes,
-                    TrimWhiteSpace = m_bTempTrimWhiteSpace,
+                    CommentTokens = _tempCommentTokensArray, 
+                    Delimiters = _tempDelimitersArray, 
+                    HasFieldsEnclosedInQuotes = _tempHasFieldsEnclosedInQuotes,
+                    TrimWhiteSpace = _tempTrimWhiteSpace,
                 };
             }
             else
             {
-                var parser = new TextFieldParser(FileName, m_encoding)
+                var parser = new TextFieldParser(FileName, _encoding)
                 {
-                    CommentTokens = m_textFieldParser.CommentTokens,
-                    Delimiters = m_textFieldParser.Delimiters,
-                    HasFieldsEnclosedInQuotes = m_textFieldParser.HasFieldsEnclosedInQuotes,
-                    TrimWhiteSpace = m_textFieldParser.TrimWhiteSpace
+                    CommentTokens = _textFieldParser.CommentTokens,
+                    Delimiters = _textFieldParser.Delimiters,
+                    HasFieldsEnclosedInQuotes = _textFieldParser.HasFieldsEnclosedInQuotes,
+                    TrimWhiteSpace = _textFieldParser.TrimWhiteSpace
                 };
 
-                m_bReadFirstLine = !SkipFirstLine;
-                m_textFieldParser = parser;
+                _readFirstLine = !SkipFirstLine;
+                _textFieldParser = parser;
             }
 
             LineNumber = 0;
@@ -151,20 +151,20 @@ namespace h0wXD.IO
 
         public string ReadLine()
         {
+            if (_textFieldParser == null)
+            {
+                Reset();
+            }
+
             if (EndOfData)
             {
                 throw new AccessViolationException(TechnicalConstants.IO.CsvFileReader.Exceptions.EndOfData);
             }
 
-            if (m_textFieldParser == null)
+            if (!_readFirstLine)
             {
-                Reset();
-            }
-
-            if (!m_bReadFirstLine)
-            {
-                m_textFieldParser.ReadLine();
-                m_bReadFirstLine = true;
+                _textFieldParser.ReadLine();
+                _readFirstLine = true;
                 LineNumber++;
 
                 if (EndOfData)
@@ -174,7 +174,7 @@ namespace h0wXD.IO
             }
 
             LineNumber++;
-            var sLine = m_textFieldParser.ReadLine();
+            var sLine = _textFieldParser.ReadLine();
 
             // Ms messed up somehow?, TextFieldParser is not skipping all comments....
 
@@ -183,20 +183,20 @@ namespace h0wXD.IO
 
         public string [] ReadFields()
         {
+            if (_textFieldParser == null)
+            {
+                Reset();
+            }
+
             if (EndOfData)
             {
                 throw new AccessViolationException(TechnicalConstants.IO.CsvFileReader.Exceptions.EndOfData);
             }
 
-            if (m_textFieldParser == null)
+            if (!_readFirstLine)
             {
-                Reset();
-            }
-
-            if (!m_bReadFirstLine)
-            {
-                m_textFieldParser.ReadFields();
-                m_bReadFirstLine = true;
+                _textFieldParser.ReadFields();
+                _readFirstLine = true;
                 LineNumber++;
 
                 if (EndOfData)
@@ -206,7 +206,7 @@ namespace h0wXD.IO
             }
 
             LineNumber++;
-            return m_textFieldParser.ReadFields();
+            return _textFieldParser.ReadFields();
         }
     }
 }
