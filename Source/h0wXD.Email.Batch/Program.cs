@@ -16,65 +16,65 @@ namespace h0wXD.Email.Batch
             var emailMessageBuilder = ProductionKernel.Instance.Get<IEmailMessageBuilder>();
             var emailDao = ProductionKernel.Instance.Get<IEmailDao>();
 
-            var sMailFrom = EnvironmentHelper.GetEnvironmentVariable("From", String.Empty);
-            var sMailToArray = EnvironmentHelper.GetEnvironmentVariable("To", String.Empty);
-            var sMailToCcArray = EnvironmentHelper.GetEnvironmentVariable("ToCc", String.Empty);
-            var sMailToBccArray = EnvironmentHelper.GetEnvironmentVariable("ToBcc", String.Empty);
-            var sMailSubject = EnvironmentHelper.GetEnvironmentVariable("Subject", String.Empty);
-            var sMailContent = EnvironmentHelper.GetEnvironmentVariable("Content", String.Empty);
-            var sMailTemplate = EnvironmentHelper.GetEnvironmentVariable("Template", String.Empty);
+            var mailFromAddress = EnvironmentHelper.GetEnvironmentVariable("From", String.Empty);
+            var mailToAddresses = EnvironmentHelper.GetEnvironmentVariable("To", String.Empty);
+            var mailToCcAddresses = EnvironmentHelper.GetEnvironmentVariable("ToCc", String.Empty);
+            var mailToBccAddresses = EnvironmentHelper.GetEnvironmentVariable("ToBcc", String.Empty);
+            var mailSubject = EnvironmentHelper.GetEnvironmentVariable("Subject", String.Empty);
+            var mailContent = EnvironmentHelper.GetEnvironmentVariable("Content", String.Empty);
+            var mailTemplate = EnvironmentHelper.GetEnvironmentVariable("Template", String.Empty);
 
             try
             {
-                if (String.IsNullOrWhiteSpace(sMailFrom) ||
-                    (String.IsNullOrWhiteSpace(sMailToArray)
-                    && String.IsNullOrWhiteSpace(sMailToCcArray) 
-                    && String.IsNullOrWhiteSpace(sMailToBccArray)))
+                if (String.IsNullOrWhiteSpace(mailFromAddress) ||
+                    (String.IsNullOrWhiteSpace(mailToAddresses)
+                    && String.IsNullOrWhiteSpace(mailToCcAddresses) 
+                    && String.IsNullOrWhiteSpace(mailToBccAddresses)))
                 {
                     throw new ArgumentException("No from / to address specified.");
                 }
 
-                emailMessageBuilder.SetSender(sMailFrom);
+                emailMessageBuilder.SetSender(mailFromAddress);
 
-                foreach (var sMailTo in EmailHelper.SplitMailAddresses(sMailToArray))
+                foreach (var mailToAddress in EmailHelper.SplitMailAddresses(mailToAddresses))
                 {
-                    emailMessageBuilder.AddReceiver(sMailTo);
+                    emailMessageBuilder.AddReceiver(mailToAddress);
                 }
 
-                foreach (var sMailToCc in EmailHelper.SplitMailAddresses(sMailToCcArray))
+                foreach (var mailToCcAddress in EmailHelper.SplitMailAddresses(mailToCcAddresses))
                 {
-                    emailMessageBuilder.AddCcReceiver(sMailToCc);
+                    emailMessageBuilder.AddCcReceiver(mailToCcAddress);
                 }
 
-                foreach (var sMailToBcc in EmailHelper.SplitMailAddresses(sMailToBccArray))
+                foreach (var mailToBccAddress in EmailHelper.SplitMailAddresses(mailToBccAddresses))
                 {
-                    emailMessageBuilder.AddBccReceiver(sMailToBcc);
+                    emailMessageBuilder.AddBccReceiver(mailToBccAddress);
                 }
 
-                if (String.IsNullOrWhiteSpace(sMailTemplate))
+                if (String.IsNullOrWhiteSpace(mailTemplate))
                 {
-                    if (String.IsNullOrWhiteSpace(sMailSubject))
+                    if (String.IsNullOrWhiteSpace(mailSubject))
                     {
                         throw new ArgumentException("No subject specified.");
                     }
 
-                    emailMessageBuilder.SetSubject(sMailSubject);
+                    emailMessageBuilder.SetSubject(mailSubject);
 
-                    if (String.IsNullOrWhiteSpace(sMailContent))
+                    if (String.IsNullOrWhiteSpace(mailContent))
                     {
                         throw new ArgumentException("No content specified.");
                     }
 
-                    emailMessageBuilder.AppendBody(sMailContent);
+                    emailMessageBuilder.AppendBody(mailContent);
                 }
                 else
                 {
-                    if (String.IsNullOrWhiteSpace(sMailTemplate))
+                    if (String.IsNullOrWhiteSpace(mailTemplate))
                     {
                         throw new ArgumentException("No template specified.");
                     }
                 
-                    emailMessageBuilder.SetTemplate(sMailTemplate);
+                    emailMessageBuilder.SetTemplate(mailTemplate);
                 }
 
                 emailDao.SendEmail(emailMessageBuilder.ToEmailMessage());

@@ -174,11 +174,11 @@ namespace h0wXD.IO
             }
 
             LineNumber++;
-            var sLine = _textFieldParser.ReadLine();
+            var line = _textFieldParser.ReadLine();
 
             // Ms messed up somehow?, TextFieldParser is not skipping all comments....
 
-            return sLine;
+            return line;
         }
 
         public string [] ReadFields()

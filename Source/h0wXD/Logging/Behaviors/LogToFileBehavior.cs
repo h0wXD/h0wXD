@@ -14,6 +14,11 @@ namespace h0wXD.Logging.Behaviors
         public IMessageFormatBehavior MessageFormatBehavior { get; set; }
         public event EventHandler<DayChangedEventArgs> DayChanged = delegate { };
 
+        public LogToFileBehavior(string logPath = @".\Log")
+            : this(null, new TimeFormatBehavior(), logPath)
+        {
+        }
+
         public LogToFileBehavior(IMessageFormatBehavior messageFormatBehavior, string logPath = @".\Log")
             : this(null, messageFormatBehavior, logPath)
         {

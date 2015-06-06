@@ -6,9 +6,9 @@ namespace h0wXD.Email.Interfaces
 {
     public interface IEmailMessageParser
     {
-        MailMessage Parse(string _sEmailFileContent);
-        IList<string> ParseHeaders(StreamReader _reader);
-        string ParseBody(StreamReader _reader);
-        string ParseHeaderValue(string _sHeader);
+        MailMessage Parse(string emailFileContent);
+        IList<string> ParseHeaders(StreamReader reader);
+        string ParseBody(StreamReader reader);
+        string ParseHeaderValue(string header);
     }
 }

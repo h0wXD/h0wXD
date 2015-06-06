@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.ServiceProcess;
+using h0wXD.Configuration.Interfaces;
 using h0wXD.Email.Service.Injection;
 using h0wXD.Email.Service.Installer;
 using h0wXD.Service;
@@ -14,9 +15,9 @@ namespace h0wXD.Email.Service
         {
             //if (Environment.UserInteractive)
             //{
-                var sServiceLocation = Assembly.GetExecutingAssembly().Location;
-                var sServiceName = (new ProjectInstaller()).ServiceName;
-                var serviceConsoleHandler = new ServiceConsoleManager(sServiceLocation, sServiceName);
+                var servicePath = Assembly.GetExecutingAssembly().Location;
+                var serviceName = (new ProjectInstaller()).ServiceName;
+                var serviceConsoleHandler = new ServiceConsoleManager(servicePath, serviceName);
 
                 if (_sArgs.Length > 0)
                 {
@@ -29,6 +30,8 @@ namespace h0wXD.Email.Service
             //}
             else
             {
+                ProductionKernel.Instance.Get<ISettings>().Open();
+
                 ServiceBase.Run(new ServiceBase [] 
                 { 
                     ProductionKernel.Instance.Get<EmailService>()

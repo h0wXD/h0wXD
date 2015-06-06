@@ -36,6 +36,7 @@
       <HintPath>..\..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -76,6 +77,10 @@
     <ProjectReference Include="..\..\Source\h0wXD.Email.Service\h0wXD.Email.Service.csproj">
       <Project>{2c97be95-5836-47d5-b7f0-71a1d6368922}</Project>
       <Name>h0wXD.Email.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Source\h0wXD\h0wXD.csproj">
+      <Project>{E6EC138F-E6A9-4722-A6E4-34B282F98C1F}</Project>
+      <Name>h0wXD</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

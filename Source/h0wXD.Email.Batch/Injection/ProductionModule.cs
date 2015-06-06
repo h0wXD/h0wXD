@@ -14,7 +14,7 @@ namespace h0wXD.Email.Batch.Injection
         public override void Load()
         {
             Bind<ILogger>().To<LogManager>().InSingletonScope();
-            Bind<IConfiguration>().To<EncryptedConfiguration>().InSingletonScope();
+            Bind<ISettings>().To<EncryptedSettings>().InSingletonScope();
             Bind<IDropEmailConfiguration>().To<DropEmailConfiguration>().InSingletonScope();
             Bind<ISendMailBehavior>().To<DropEmailBehavior>().InSingletonScope();
         }

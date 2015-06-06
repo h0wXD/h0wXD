@@ -21,6 +21,8 @@ namespace h0wXD.Configuration
 
             if (Opened)
             {
+                _accessedSections.Add(DefaultClientSection);
+
                 if (!DefaultClientSection.SectionInformation.IsProtected)
                 {
                     Save();

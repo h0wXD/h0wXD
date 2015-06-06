@@ -7,9 +7,9 @@ namespace h0wXD.Email.Batch.Configuration
     {
         public string DropFolder { get; private set; }
 
-        public DropEmailConfiguration(IConfiguration _config)
+        public DropEmailConfiguration(ISettings settings)
         {
-            DropFolder = _config.Read<string>(TechnicalConstants.Settings.DropFolder);
+            DropFolder = settings.Read<string>(TechnicalConstants.Settings.DropFolder);
         }
     }
 }

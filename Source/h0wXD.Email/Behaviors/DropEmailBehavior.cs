@@ -7,17 +7,17 @@ namespace h0wXD.Email.Behaviors
 {
     public class DropEmailBehavior : ISendMailBehavior
     {
-        private readonly IDropEmailConfiguration m_dropEmailConfiguration;
+        private readonly IDropEmailConfiguration _dropEmailConfiguration;
 
-        public DropEmailBehavior(IDropEmailConfiguration _dropEmailConfiguration)
+        public DropEmailBehavior(IDropEmailConfiguration dropEmailConfiguration)
         {
-            m_dropEmailConfiguration = _dropEmailConfiguration;
+            _dropEmailConfiguration = dropEmailConfiguration;
         }
 
-        public void Send(MailMessage _message)
+        public void Send(MailMessage message)
         {
-            var sFileName = Path.Combine(m_dropEmailConfiguration.DropFolder, Guid.NewGuid().ToString()) + ".eml";
-            _message.Save(sFileName);
+            var fileName = Path.Combine(_dropEmailConfiguration.DropFolder, Guid.NewGuid().ToString()) + ".eml";
+            message.Save(fileName);
         }
     }
 }

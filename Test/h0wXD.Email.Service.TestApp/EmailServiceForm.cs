@@ -2,35 +2,34 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
-using h0wXD.Email.Service.Daemon;
 using h0wXD.Email.Service.Interfaces;
 
 namespace h0wXD.Email.Service.TestApp
 {
     public partial class EmailServiceForm : Form
     {
-        private readonly IEmailDaemon m_emailDaemon;
-        private readonly Thread m_thread;
+        private readonly IEmailDaemon _emailDaemon;
+        private readonly Thread _thread;
 
-        public EmailServiceForm(IEmailDaemon _emailDaemon)
+        public EmailServiceForm(IEmailDaemon emailDaemon)
         {
             InitializeComponent();
-            m_emailDaemon = _emailDaemon;
+            _emailDaemon = emailDaemon;
 
-            m_thread = new Thread(ThreadProc);
-            m_thread.Start();
+            _thread = new Thread(ThreadProc);
+            _thread.Start();
         }
 
-        private void ControlButton_Click(object _sender, EventArgs _e)
+        private void ControlButton_Click(object sender, EventArgs e)
         {
             if (ControlButton.Text == "Pause")
             {
-                m_emailDaemon.Pause();
+                _emailDaemon.Pause();
                 ControlButton.Text = "Continue";
             }
             else
             {
-                m_emailDaemon.Continue();
+                _emailDaemon.Continue();
                 ControlButton.Text = "Pause";
             }
         }
@@ -39,22 +38,22 @@ namespace h0wXD.Email.Service.TestApp
         {
             try
             {
-                m_emailDaemon.Execute();
+                _emailDaemon.Execute();
             }
             catch (ThreadAbortException)
             {
             }
-            catch (Exception _ex)
+            catch (Exception ex)
             {
-                var sUnknownError = _ex.Message + Environment.NewLine + _ex.StackTrace;
-                Debug.WriteLine(sUnknownError);
-                MessageBox.Show(sUnknownError, "Unknown Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var unknownError = ex.Message + System.Environment.NewLine + ex.StackTrace;
+                Debug.WriteLine(unknownError);
+                MessageBox.Show(unknownError, "Unknown Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void EmailServiceForm_FormClosing(object _sender, FormClosingEventArgs _e)
+        private void EmailServiceForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            m_thread.Abort();
+            _thread.Abort();
         }
     }
 }

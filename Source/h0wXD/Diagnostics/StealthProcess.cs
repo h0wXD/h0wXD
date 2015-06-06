@@ -54,9 +54,9 @@ namespace h0wXD.Diagnostics
         {
             var stringBuilder = new StringBuilder(128);
 
-            foreach (var sArgument in args)
+            foreach (var argument in args)
             {
-                stringBuilder.Append(sArgument);
+                stringBuilder.Append(argument);
                 stringBuilder.Append(" ");
             }
 

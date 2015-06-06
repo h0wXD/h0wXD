@@ -10,67 +10,67 @@ namespace h0wXD.Email.Parsers
 {
     public class EmailMessageParser : IEmailMessageParser
     {
-        private static KeyValuePair<string, string> SplitHeader(string _sHeader)
+        private static KeyValuePair<string, string> SplitHeader(string header)
         {
-            var sHeaderArray = _sHeader.Split(new [] { ": " }, 1, StringSplitOptions.None);
+            var headers = header.Split(new [] { ": " }, 1, StringSplitOptions.None);
 
-            return new KeyValuePair<string, string>(sHeaderArray[0].ToLowerInvariant(), sHeaderArray.Length > 1 ? sHeaderArray[1] : "");
+            return new KeyValuePair<string, string>(headers[0].ToLowerInvariant(), headers.Length > 1 ? headers[1] : "");
         }
 
-        private static string ReadKey(Dictionary<string, string> _headerMap, string _sKey, string _defaultValue)
+        private static string ReadKey(Dictionary<string, string> headers, string key, string defaultValue)
         {
-            return _headerMap.ContainsKey(_sKey) ? _headerMap[_sKey] : _defaultValue;
+            return headers.ContainsKey(key) ? headers[key] : defaultValue;
         }
 
-        private static string [] ReadKeys(Dictionary<string, string> _headerMap, string _sKey, string _defaultValue)
+        private static string [] ReadKeys(Dictionary<string, string> headers, string key, string defaultValue)
         {
-            var sValue = ReadKey(_headerMap, _sKey, _defaultValue);
+            var value = ReadKey(headers, key, defaultValue);
 
-            if (sValue == _defaultValue)
+            if (value == defaultValue)
             {
                 return new string [] {};
             }
 
-            return sValue.Split(new [] {", "}, StringSplitOptions.RemoveEmptyEntries);
+            return value.Split(new [] {", "}, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public MailMessage Parse(string _sEmailFileContent)
+        public MailMessage Parse(string emailFileContent)
         {
             var emailMessage = new MailMessage();
             
-            using (var streamReader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(_sEmailFileContent))))
+            using (var streamReader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(emailFileContent))))
             {
-                var sReceiverList = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                var sHeaderList = ParseHeaders(streamReader);
-                var sHeaderMap = sHeaderList.Select(SplitHeader).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                var receivers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var headers = ParseHeaders(streamReader);
+                var headerMap = headers.Select(SplitHeader).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
                 emailMessage.Body = ParseBody(streamReader);
-                emailMessage.IsBodyHtml = sHeaderList.Any(x => x.StartsWith("Content-Type: ") && x.Contains("text/html"));
+                emailMessage.IsBodyHtml = headers.Any(x => x.StartsWith("Content-Type: ") && x.Contains("text/html"));
 
-                emailMessage.Subject = ReadKey(sHeaderMap, "subject", String.Empty);
-                emailMessage.From = new MailAddress(ReadKey(sHeaderMap, "from", String.Empty));
+                emailMessage.Subject = ReadKey(headerMap, "subject", String.Empty);
+                emailMessage.From = new MailAddress(ReadKey(headerMap, "from", String.Empty));
                 
-                foreach (var sReceiver in ReadKeys(sHeaderMap, "to", String.Empty))
+                foreach (var receiver in ReadKeys(headerMap, "to", String.Empty))
                 {
-                    if (sReceiverList.Add(sReceiver))
+                    if (receivers.Add(receiver))
                     {
-                        emailMessage.To.Add(sReceiver);
+                        emailMessage.To.Add(receiver);
                     }
                 }
 
-                foreach (var sReceiver in ReadKeys(sHeaderMap, "cc", String.Empty))
+                foreach (var receiver in ReadKeys(headerMap, "cc", String.Empty))
                 {
-                    if (sReceiverList.Add(sReceiver))
+                    if (receivers.Add(receiver))
                     {
-                        emailMessage.CC.Add(sReceiver);
+                        emailMessage.CC.Add(receiver);
                     }
                 }
 
-                foreach (var sHiddenReceiver in sHeaderList.Where(x => x.StartsWith("X-Receiver: ")).Select(SplitHeader).Select(x => x.Value))
+                foreach (var hiddenReceiver in headers.Where(x => x.StartsWith("X-Receiver: ")).Select(SplitHeader).Select(x => x.Value))
                 {
-                    if (sReceiverList.Add(sHiddenReceiver))
+                    if (receivers.Add(hiddenReceiver))
                     {
-                        emailMessage.Bcc.Add(new MailAddress(sHiddenReceiver));
+                        emailMessage.Bcc.Add(new MailAddress(hiddenReceiver));
                     }
                 }
             }
@@ -85,104 +85,104 @@ namespace h0wXD.Email.Parsers
             return emailMessage;
         }
         
-        public IList<string> ParseHeaders(StreamReader _reader)
+        public IList<string> ParseHeaders(StreamReader reader)
         {
-            var sHeaderList = new List<string>();
-            var bAreHeadersParsed = false;
+            var headers = new List<string>();
+            var areHeadersParsed = false;
 
-            _reader.DiscardBufferedData();
+            reader.DiscardBufferedData();
 
-            while (!_reader.EndOfStream && 
-                   !bAreHeadersParsed)
+            while (!reader.EndOfStream && 
+                   !areHeadersParsed)
             {
-                var sLine = _reader.ReadLine();
+                var line = reader.ReadLine();
 
-                if (String.IsNullOrEmpty(sLine))
+                if (String.IsNullOrEmpty(line))
                 {
-                    bAreHeadersParsed = true;
+                    areHeadersParsed = true;
                     continue;
                 }
 
-                if (!sLine.Contains(": ") && 
-                    sHeaderList.Count > 0)
+                if (!line.Contains(": ") && 
+                    headers.Count > 0)
                 {
-                    sHeaderList[sHeaderList.Count - 1] = sHeaderList[sHeaderList.Count - 1] + sLine;
+                    headers[headers.Count - 1] = headers[headers.Count - 1] + line;
                 }
                 else
                 {
-                    sHeaderList.Add(sLine);
+                    headers.Add(line);
                 }
             }
 
-            if (!bAreHeadersParsed || 
-                _reader.EndOfStream)
+            if (!areHeadersParsed || 
+                reader.EndOfStream)
             {
                 throw new InvalidDataException("Could not parse all headers.");   
             }
 
-            return sHeaderList;
+            return headers;
         }
 
-        public string ParseBody(StreamReader _reader)
+        public string ParseBody(StreamReader reader)
         {
-            var sBody = new StringBuilder();
-            var bAreHeadersParsed = false;
+            var body = new StringBuilder();
+            var areHeadersParsed = false;
             
-            _reader.DiscardBufferedData();
+            reader.DiscardBufferedData();
             
-            while (!_reader.EndOfStream)
+            while (!reader.EndOfStream)
             {
-                var sLine = _reader.ReadLine();
+                var line = reader.ReadLine();
                 
-                if (String.IsNullOrEmpty(sLine))
+                if (String.IsNullOrEmpty(line))
                 {
-                    bAreHeadersParsed = true;
+                    areHeadersParsed = true;
                     continue;
                 }
 
-                if (bAreHeadersParsed)
+                if (areHeadersParsed)
                 {
-                    var sFixedLine = sLine[sLine.Length - 1] == '=' ? sLine.Remove(sLine.Length - 1) : sLine;
+                    var sFixedLine = line[line.Length - 1] == '=' ? line.Remove(line.Length - 1) : line;
 
                     sFixedLine = sFixedLine.Replace("=0D", "\r").Replace("=0A", "\n");
 
-                    sBody.Append(sFixedLine);
+                    body.Append(sFixedLine);
                 }
             }
 
-            if (!bAreHeadersParsed || 
-                _reader.EndOfStream)
+            if (!areHeadersParsed || 
+                reader.EndOfStream)
             {
                 throw new InvalidDataException("Could not parse content.");   
             }
 
-            return sBody.ToString();
+            return body.ToString();
         }
 
-        public string ParseHeaderValue(string _sHeader)
+        public string ParseHeaderValue(string header)
         {
-            var iHeaderLength = _sHeader.Length - 1;
+            var headerLength = header.Length - 1;
 
-            for (var i = 0; i < iHeaderLength; i++)
+            for (var i = 0; i < headerLength; i++)
             {
-                if (_sHeader[i] == ':' &&
-                    _sHeader[i + 1] == ' ')
+                if (header[i] == ':' &&
+                    header[i + 1] == ' ')
                 {
-                    return _sHeader.Substring(i + 2);
+                    return header.Substring(i + 2);
                 }
             }
 
-            return _sHeader;
+            return header;
         }
 
-        private bool IsInvalid(MailMessage _message)
+        private bool IsInvalid(MailMessage message)
         {
-            return ((_message.To.Count == 0 &&
-                     _message.CC.Count == 0 &&
-                     _message.Bcc.Count == 0)
-                     || _message.From == null
-                     || String.IsNullOrWhiteSpace(_message.Subject)
-                     || String.IsNullOrWhiteSpace(_message.Body));
+            return ((message.To.Count == 0 &&
+                     message.CC.Count == 0 &&
+                     message.Bcc.Count == 0)
+                     || message.From == null
+                     || String.IsNullOrWhiteSpace(message.Subject)
+                     || String.IsNullOrWhiteSpace(message.Body));
         }
     }
 }

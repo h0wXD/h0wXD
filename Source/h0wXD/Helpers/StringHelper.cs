@@ -60,14 +60,14 @@ namespace h0wXD.Helpers
         {
             minimumMatchCount = Math.Min(text.Length, minimumMatchCount);
 
-            var sTextToMatch = value.Substring(0, Math.Min(value.Length, minimumMatchCount));
+            var textToMatch = value.Substring(0, Math.Min(value.Length, minimumMatchCount));
 
             if (value.Length == text.Length)
             {
                 return value.Equals(text, _comparisonType);
             }
 
-            return text.StartsWith(sTextToMatch, _comparisonType);
+            return text.StartsWith(textToMatch, _comparisonType);
         }
     }
 }

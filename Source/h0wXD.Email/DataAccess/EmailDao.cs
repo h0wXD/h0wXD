@@ -6,21 +6,21 @@ namespace h0wXD.Email.DataAccess
 {
     public class EmailDao : IEmailDao
     {
-        private readonly ISendMailBehavior m_sendMailBehavior;
+        private readonly ISendMailBehavior _sendMailBehavior;
 
-        public EmailDao(ISendMailBehavior _sendMailBehavior)
+        public EmailDao(ISendMailBehavior sendMailBehavior)
         {
-            m_sendMailBehavior = _sendMailBehavior;
+            _sendMailBehavior = sendMailBehavior;
         }
 
-        public void SendEmail(MailMessage _mailMessage)
+        public void SendEmail(MailMessage mailMessage)
         {
-            m_sendMailBehavior.Send(_mailMessage);
+            _sendMailBehavior.Send(mailMessage);
         }
 
-        public string LoadEmail(string _sFileName)
+        public string LoadEmail(string fileName)
         {
-            return File.ReadAllText(_sFileName);
+            return File.ReadAllText(fileName);
         }
     }
 }

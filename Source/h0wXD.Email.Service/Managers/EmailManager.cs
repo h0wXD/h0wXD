@@ -12,56 +12,56 @@ namespace h0wXD.Email.Service.Managers
 {
     public class EmailManager : IEmailManager
     {
-        private readonly IDirectoryWatcher m_directoryWatcher;
-        private readonly IEmailDao m_emailDao;
-        private readonly IEmailMessageParser m_emailMessageParser;
-        private readonly ILogger m_logger;
-        private readonly bool m_bArchiveEmails;
+        private readonly IDirectoryWatcher _directoryWatcher;
+        private readonly IEmailDao _emailDao;
+        private readonly IEmailMessageParser _emailMessageParser;
+        private readonly ILogger _logger;
+        private readonly bool _archiveEmails;
 
-        private readonly string m_sMailToAddress;
-        private readonly string m_sMailFromAddress;
-        private readonly string m_sMailFromDisplayName;
-        private readonly Dictionary<int, bool> m_processingStatus = new Dictionary<int, bool>();
+        private readonly string _mailToAddress;
+        private readonly string _mailFromAddress;
+        private readonly string _mailFromDisplayName;
+        private readonly Dictionary<int, bool> _processingStatus = new Dictionary<int, bool>();
         
-        public EmailManager(IConfiguration _config, IDirectoryWatcher _directoryWatcher, IEmailDao _emailDao, IEmailMessageParser _emailMessageParser, ILogger _logger)
+        public EmailManager(ISettings settings, IDirectoryWatcher directoryWatcher, IEmailDao emailDao, IEmailMessageParser emailMessageParser, ILogger logger)
         {
-            m_emailDao = _emailDao;
-            m_emailMessageParser = _emailMessageParser;
-            m_logger = _logger;
-            m_directoryWatcher = _directoryWatcher;
-            m_bArchiveEmails = _config.Read(TechnicalConstants.Settings.ArchiveProcessed, false);
-            m_sMailToAddress = _config.Read(TechnicalConstants.Settings.MailTo, String.Empty);
-            m_sMailFromAddress = _config.Read(TechnicalConstants.Settings.MailFrom, String.Empty);
-            m_sMailFromDisplayName = _config.Read(TechnicalConstants.Settings.MailFromDisplay, String.Empty);
+            _emailDao = emailDao;
+            _emailMessageParser = emailMessageParser;
+            _logger = logger;
+            _directoryWatcher = directoryWatcher;
+            _archiveEmails = settings.Read(TechnicalConstants.Settings.ArchiveProcessed, false);
+            _mailToAddress = settings.Read(TechnicalConstants.Settings.MailTo, String.Empty);
+            _mailFromAddress = settings.Read(TechnicalConstants.Settings.MailFrom, String.Empty);
+            _mailFromDisplayName = settings.Read(TechnicalConstants.Settings.MailFromDisplay, String.Empty);
         }
 
-        public void ProcessEmail(string _sFileName)
+        public void ProcessEmail(string fileName)
         {
-            var iHashCode = _sFileName.GetHashCode();
+            var hashCode = fileName.GetHashCode();
 
-            if (m_emailDao.IsProcessed(_sFileName) ||
-                !StartProcessing(iHashCode))
+            if (_emailDao.IsProcessed(fileName) ||
+                !StartProcessing(hashCode))
             {
                 return;
             }
 
             try
             {
-                var sFileContents = m_emailDao.Load(_sFileName);
-                var emailMessage = m_emailMessageParser.Parse(sFileContents);
+                var fileContents = _emailDao.Load(fileName);
+                var emailMessage = _emailMessageParser.Parse(fileContents);
 
-                m_logger.Info("Parsed file {0}", _sFileName);
+                _logger.Info("Parsed file {0}", fileName);
 #if DEBUG
                 // Very little performance boost, as Conditional("DEBUG") does not work when using interfaces.
-                m_logger.Debug(mailMessage.ToString());
+                _logger.Debug(emailMessage.ToString());
 #endif
 
-                if (!String.IsNullOrEmpty(m_sMailFromAddress))
+                if (!String.IsNullOrEmpty(_mailFromAddress))
                 {
-                    var sDisplayName = String.IsNullOrEmpty(m_sMailFromDisplayName) ? emailMessage.From.DisplayName : m_sMailFromDisplayName;
-                    emailMessage.From = new MailAddress(m_sMailFromAddress, sDisplayName);
+                    var displayName = String.IsNullOrEmpty(_mailFromDisplayName) ? emailMessage.From.DisplayName : _mailFromDisplayName;
+                    emailMessage.From = new MailAddress(_mailFromAddress, displayName);
                 }
-                if (!String.IsNullOrEmpty(m_sMailToAddress))
+                if (!String.IsNullOrEmpty(_mailToAddress))
                 {
                     var to = emailMessage.To.Count > 0 ? emailMessage.To[0] : emailMessage.CC.Count > 0 ? emailMessage.CC[0] : emailMessage.Bcc.Count > 0 ? emailMessage.Bcc[0] : null;
                     if (to != null)
@@ -69,39 +69,39 @@ namespace h0wXD.Email.Service.Managers
                         emailMessage.To.Clear();
                         emailMessage.CC.Clear();
                         emailMessage.Bcc.Clear();
-                        emailMessage.To.Add(new MailAddress(m_sMailToAddress, to.DisplayName));
+                        emailMessage.To.Add(new MailAddress(_mailToAddress, to.DisplayName));
                     }
                 }
 
-                if (m_emailDao.Send(emailMessage))
+                if (_emailDao.Send(emailMessage))
                 {
-                    if (m_bArchiveEmails)
+                    if (_archiveEmails)
                     {
-                        m_emailDao.MoveToArchive(_sFileName);
+                        _emailDao.MoveToArchive(fileName);
                     }
                     else
                     {
-                        m_emailDao.Delete(_sFileName);
+                        _emailDao.Delete(fileName);
                     }
                 }
             }
-            catch (Exception _ex)
+            catch (Exception ex)
             {
-                m_logger.Error("Unable to parse email {0}:\n{1}\n{2}", _sFileName, _ex.Message, _ex.StackTrace);
-                m_emailDao.MoveToError(_sFileName);
+                _logger.Error("Unable to parse email {0}:\n{1}\n{2}", fileName, ex.Message, ex.StackTrace);
+                _emailDao.MoveToError(fileName);
             }
 
-            SetProcessing(iHashCode, false);
+            SetProcessing(hashCode, false);
         }
 
-        private bool StartProcessing(int _iHashCode)
+        private bool StartProcessing(int hashCode)
         {
-            lock (m_processingStatus)
+            lock (_processingStatus)
             {
-                if (!m_processingStatus.ContainsKey(_iHashCode) ||
-                    m_processingStatus[_iHashCode] == false)
+                if (!_processingStatus.ContainsKey(hashCode) ||
+                    _processingStatus[hashCode] == false)
                 {
-                    m_processingStatus[_iHashCode] = true;
+                    _processingStatus[hashCode] = true;
                     return true;
                 }
 
@@ -109,27 +109,27 @@ namespace h0wXD.Email.Service.Managers
             }
         }
 
-        private void SetProcessing(int _iHashCode, bool _bStatus)
+        private void SetProcessing(int hashCode, bool processingStatus)
         {
-            lock (m_processingStatus)
+            lock (_processingStatus)
             {
-                m_processingStatus[_iHashCode] = _bStatus;
+                _processingStatus[hashCode] = processingStatus;
             }
         }
 
         public void ProcessExistingEmails()
         {
-            foreach (var directory in m_directoryWatcher.Directories)
+            foreach (var directory in _directoryWatcher.Directories)
             {
-                var sFileMasks = directory.FileMask.Split(';');
+                var fileMasks = directory.FileMask.Split(';');
 
-                foreach (var sFileMask in sFileMasks)
+                foreach (var fileMask in fileMasks)
                 {
-                    var sEmailFileArray = m_emailDao.FindEmailsByFileMask(directory.Path, sFileMask);
+                    var emailFiles = _emailDao.FindEmailsByFileMask(directory.Path, fileMask);
 
-                    foreach (var sEmailFile in sEmailFileArray)
+                    foreach (var emailFile in emailFiles)
                     {
-                        ProcessEmail(sEmailFile);
+                        ProcessEmail(emailFile);
                     }
                 }
             }

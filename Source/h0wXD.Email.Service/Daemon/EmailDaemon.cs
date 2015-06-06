@@ -9,38 +9,38 @@ namespace h0wXD.Email.Service.Daemon
 {
     public class EmailDaemon : IEmailDaemon
     {
-        private readonly IEmailManager m_emailManager;
-        private readonly IDirectoryWatcher m_directoryWatcher;
-        private readonly ILogger m_logger;
+        private readonly IEmailManager _emailManager;
+        private readonly IDirectoryWatcher _directoryWatcher;
+        private readonly ILogger _logger;
 
-        public EmailDaemon(IConfiguration _config, IEmailManager _emailManager, IDirectoryWatcher _directoryWatcher, ILogger _logger)
+        public EmailDaemon(ISettings settings, IEmailManager emailManager, IDirectoryWatcher directoryWatcher, ILogger logger)
         {
-            m_emailManager = _emailManager;
-            m_directoryWatcher = _directoryWatcher;
-            m_logger = _logger;
+            _emailManager = emailManager;
+            _directoryWatcher = directoryWatcher;
+            _logger = logger;
 
-            m_directoryWatcher.AddDirectory(_config.Read<string>(TechnicalConstants.Settings.DropFolder), "*.eml");
+            _directoryWatcher.AddDirectory(settings.Read<string>(TechnicalConstants.Settings.DropFolder), "*.eml");
         }
 
         public void Pause()
         {
-            m_logger.Info("Paused service.");
-            m_directoryWatcher.Stop();
+            _logger.Info("Paused service.");
+            _directoryWatcher.Stop();
         }
 
         public void Continue()
         {
-            m_logger.Info("Continued service.");
-            m_directoryWatcher.Start();
+            _logger.Info("Continued service.");
+            _directoryWatcher.Start();
         }
 
         public void Execute()
         {
-            m_logger.Info("Starting service...");
-            m_directoryWatcher.Created += OnCreated;
-            m_directoryWatcher.Start();
-            m_logger.Info("Started service.");
-            m_emailManager.ProcessExistingEmails();
+            _logger.Info("Starting service...");
+            _directoryWatcher.Created += OnCreated;
+            _directoryWatcher.Start();
+            _logger.Info("Started service.");
+            _emailManager.ProcessExistingEmails();
 
             while (true)
             {
@@ -48,9 +48,9 @@ namespace h0wXD.Email.Service.Daemon
             }
         }
 
-        private void OnCreated(object _sender, FileSystemEventArgs _e)
+        private void OnCreated(object sender, FileSystemEventArgs e)
         {
-            m_emailManager.ProcessEmail(_e.FullPath);
+            _emailManager.ProcessEmail(e.FullPath);
         }
     }
 }

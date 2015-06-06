@@ -8,20 +8,20 @@ namespace h0wXD.Email.Helpers
 {
     public static class EmailHelper
     {
-        public static string [] SplitMailAddresses(string _sMultipleMailAddresses)
+        public static string [] SplitMailAddresses(string multipleMailAddresses)
         {
-            return _sMultipleMailAddresses.Split(';');
+            return multipleMailAddresses.Split(';');
         }
 
-        public static MailAddress ParseMailAddress(string _sMailAddress)
+        public static MailAddress ParseMailAddress(string mailAddress)
         {
             try
             {
-                return new MailAddress(_sMailAddress);
+                return new MailAddress(mailAddress);
             }
             catch (Exception ex)
             {
-                throw new ArgumentException("Could not parse email address " + _sMailAddress, ex);
+                throw new ArgumentException("Could not parse email address " + mailAddress, ex);
             }
         }
     }

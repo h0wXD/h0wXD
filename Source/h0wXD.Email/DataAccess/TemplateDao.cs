@@ -5,24 +5,24 @@ namespace h0wXD.Email.DataAccess
 {
     public class TemplateDao : ITemplateDao
     {
-        public bool PathExists(string _sPath)
+        public bool PathExists(string path)
         {
-            return Directory.Exists(_sPath);
+            return Directory.Exists(path);
         }
 
-        public string [] GetFileList(string _sPath, string _sSearchPattern)
+        public string [] GetFileList(string directory, string fileMask)
         {
-            if (!Directory.Exists(_sPath))
+            if (!Directory.Exists(directory))
             {
                 return new string [] {};
             }
 
-            return Directory.GetFiles(_sPath, _sSearchPattern);
+            return Directory.GetFiles(directory, fileMask);
         }
 
-        public string ReadFile(string _sFileName)
+        public string ReadFile(string fileName)
         {
-            return File.ReadAllText(_sFileName);
+            return File.ReadAllText(fileName);
         }
     }
 }

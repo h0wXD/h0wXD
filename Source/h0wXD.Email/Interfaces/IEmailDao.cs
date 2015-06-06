@@ -4,8 +4,8 @@ namespace h0wXD.Email.Interfaces
 {
     public interface IEmailDao
     {
-        void SendEmail(MailMessage _mailMessage);
+        void SendEmail(MailMessage mailMessage);
 
-        string LoadEmail(string _sFileName);
+        string LoadEmail(string fileName);
     }
 }

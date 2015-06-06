@@ -10,6 +10,11 @@ namespace h0wXD.Logging.Behaviors
         public IMessageFormatBehavior MessageFormatBehavior { get; set; }
         public event EventHandler<DayChangedEventArgs> DayChanged = delegate { };
 
+        public LogToConsoleBehavior()
+            : this(new MessageFormatBehavior())
+        {
+        }
+
         public LogToConsoleBehavior(IMessageFormatBehavior messageFormatBehavior)
         {
             MessageFormatBehavior = messageFormatBehavior;

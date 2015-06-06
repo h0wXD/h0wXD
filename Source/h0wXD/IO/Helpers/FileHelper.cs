@@ -7,18 +7,18 @@ namespace h0wXD.IO.Helpers
 	{
 		public static void Copy(string sourcePath, string destinationPath, string fileMask = TechnicalConstants.IO.FileMaskAny, bool recursive = true)
 		{
-			foreach (var sFile in Directory.GetFiles(sourcePath, fileMask, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+			foreach (var fileName in Directory.GetFiles(sourcePath, fileMask, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
 			{
-                var sDestinationFileName = sFile.Replace(sourcePath, destinationPath);
-                var sDirectory = Path.GetDirectoryName(sDestinationFileName);
+                var destinationFileName = fileName.Replace(sourcePath, destinationPath);
+                var directory = Path.GetDirectoryName(destinationFileName);
 
-                if (!String.IsNullOrWhiteSpace(sDirectory) &&
-                    !Directory.Exists(sDirectory))
+                if (!String.IsNullOrWhiteSpace(directory) &&
+                    !Directory.Exists(directory))
                 {
-                    Directory.CreateDirectory(sDirectory);
+                    Directory.CreateDirectory(directory);
                 }
 
-				File.Copy(sFile, sDestinationFileName, true);
+				File.Copy(fileName, destinationFileName, true);
 			}
 		}
     }

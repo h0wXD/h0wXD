@@ -4,12 +4,12 @@ namespace h0wXD.Email.Service.Interfaces
 {
     public interface IEmailDao
     {
-        string [] FindEmailsByFileMask(string _sPath, string _sFileMask);
-        bool IsProcessed(string _sEmailFile);
-        void MoveToError(string _sEmailFile);
-        void MoveToArchive(string _sEmailFile);
-        void Delete(string _sEmailFile);
-        bool Send(MailMessage _mailMessage);
-        string Load(string _sFileName);
+        string [] FindEmailsByFileMask(string directory, string fileMask);
+        bool IsProcessed(string emailFilePath);
+        void MoveToError(string emailFilePath);
+        void MoveToArchive(string emailFilePath);
+        void Delete(string emailFilePath);
+        bool Send(MailMessage mailMessage);
+        string Load(string fileName);
     }
 }

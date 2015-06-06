@@ -4,6 +4,6 @@ namespace h0wXD.Email.Interfaces
 {
     public interface ISendMailBehavior
     {
-        void Send(MailMessage _message);
+        void Send(MailMessage message);
     }
 }

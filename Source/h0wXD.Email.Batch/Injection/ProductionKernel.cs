@@ -5,9 +5,9 @@ namespace h0wXD.Email.Batch.Injection
 {
     public class ProductionKernel : StandardKernel
     {
-        private static ProductionKernel ms_productionKernel;
+        private static ProductionKernel Kernel;
 
-        public static IKernel Instance { get { return ms_productionKernel ?? (ms_productionKernel = new ProductionKernel()); } }
+        public static IKernel Instance { get { return Kernel ?? (Kernel = new ProductionKernel()); } }
 
         public ProductionKernel()
         {

@@ -5,13 +5,13 @@ namespace h0wXD.Email.Interfaces
     public interface IEmailMessageBuilder
     {
         void Reset();
-        void SetSender(string _sMailFromAddress);
-        void SetSubject(string _sMailSubject);
-        void AppendBody(string _sMailBodyContent);
-        void SetTemplate(string _sTemplatePath);
-        void AddReceiver(string _sMailToAddress);
-        void AddCcReceiver(string _sMailToAddress);
-        void AddBccReceiver(string _sMailToAddress);
+        void SetSender(string mailFromAddress);
+        void SetSubject(string subject);
+        void AppendBody(string text);
+        void SetTemplate(string templatePath);
+        void AddReceiver(string mailToAddress);
+        void AddCcReceiver(string mailToAddress);
+        void AddBccReceiver(string mailToAddress);
         MailMessage ToEmailMessage();
     }
 }

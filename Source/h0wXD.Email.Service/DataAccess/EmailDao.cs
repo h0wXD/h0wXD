@@ -11,98 +11,99 @@ namespace h0wXD.Email.Service.DataAccess
 {
     public class EmailDao : IEmailDao
     {
-        private readonly ILogger m_logger;
-        private readonly string m_sPathToError;
-        private readonly string m_sPathToArchive;
-        private readonly SmtpClient m_smtpClient;
+        private readonly ILogger _logger;
+        private readonly string _errorPath;
+        private readonly string _archivePath;
+        private readonly SmtpClient _smtpClient;
 
-        public EmailDao(IConfiguration _config, ILogger _logger)
+        public EmailDao(ISettings settings, ILogger logger)
         {
-            m_logger = _logger;
-            var sDropFolderPath = _config.Read<string>(TechnicalConstants.Settings.DropFolder);
-            
-            m_sPathToError = Path.Combine(sDropFolderPath, TechnicalConstants.ErrorFolder);
-            m_sPathToArchive = Path.Combine(sDropFolderPath, TechnicalConstants.ArchiveFolder);
+            _logger = logger;
 
-            foreach (var sPath in new [] {m_sPathToError, m_sPathToArchive}.Where(sPath => !Directory.Exists(sPath)))
+            var dropFolderPath = settings.Read<string>(TechnicalConstants.Settings.DropFolder);
+            
+            _errorPath = Path.Combine(dropFolderPath, TechnicalConstants.ErrorFolder);
+            _archivePath = Path.Combine(dropFolderPath, TechnicalConstants.ArchiveFolder);
+
+            foreach (var path in new [] {_errorPath, _archivePath}.Where(path => !Directory.Exists(path)))
             {
-                Directory.CreateDirectory(sPath);
+                Directory.CreateDirectory(path);
             }
 
-            var sSmtpServer = _config.Read<string>(TechnicalConstants.Settings.SmtpServer);
-            var usSmtpPort = _config.Read<ushort>(TechnicalConstants.Settings.SmtpPort);
-            var sSmtpLogin = _config.Read<string>(TechnicalConstants.Settings.SmtpLogin);
-            var sSmtpPassword = _config.Read<string>(TechnicalConstants.Settings.SmtpPassword);
+            var smtpServer = settings.Read<string>(TechnicalConstants.Settings.SmtpServer);
+            var smtpPort = settings.Read<ushort>(TechnicalConstants.Settings.SmtpPort);
+            var smtpLogin = settings.Read<string>(TechnicalConstants.Settings.SmtpLogin);
+            var smtpPassword = settings.Read<string>(TechnicalConstants.Settings.SmtpPassword);
 
-            m_smtpClient = new SmtpClient(sSmtpServer, usSmtpPort);
-            m_smtpClient.EnableSsl = true;
-            m_smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-            m_smtpClient.UseDefaultCredentials = false;
-            m_smtpClient.Credentials = new NetworkCredential(sSmtpLogin, sSmtpPassword);
+            _smtpClient = new SmtpClient(smtpServer, smtpPort);
+            _smtpClient.EnableSsl = true;
+            _smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+            _smtpClient.UseDefaultCredentials = false;
+            _smtpClient.Credentials = new NetworkCredential(smtpLogin, smtpPassword);
         }
 
-        public string [] FindEmailsByFileMask(string _sPath, string _sFileMask)
+        public string [] FindEmailsByFileMask(string directory, string fileMask)
         {
-            return Directory.GetFiles(_sPath, _sFileMask);
+            return Directory.GetFiles(directory, fileMask);
         }
 
-        public bool IsProcessed(string _sEmailFile)
+        public bool IsProcessed(string emailFilePath)
         {
-            return !File.Exists(_sEmailFile);
+            return !File.Exists(emailFilePath);
         }
 
-        public void MoveToError(string _sEmailFile)
+        public void MoveToError(string emailFilePath)
         {
-            MoveFile(_sEmailFile, m_sPathToError);
+            MoveFile(emailFilePath, _errorPath);
         }
 
-        public void MoveToArchive(string _sEmailFile)
+        public void MoveToArchive(string emailFilePath)
         {
-            MoveFile(_sEmailFile, m_sPathToArchive);
+            MoveFile(emailFilePath, _archivePath);
         }
 
-        private void MoveFile(string _sFile, string _sDestinationPath)
+        private void MoveFile(string emailFile, string destinationPath)
         {
-            var iNumber = 1;
-            var sNewFile = Path.Combine(_sDestinationPath, Path.GetFileName(_sFile));
-            var sExtension = Path.GetExtension(_sFile);
+            var counter = 1;
+            var newFileName = Path.Combine(destinationPath, Path.GetFileName(emailFile));
+            var fileExtension = Path.GetExtension(emailFile);
 
-            while (File.Exists(sNewFile))
+            while (File.Exists(newFileName))
             {
-                sNewFile = Path.Combine(_sDestinationPath, Path.GetFileNameWithoutExtension(_sFile) + "_" + iNumber + sExtension);
-                iNumber++;
+                newFileName = Path.Combine(destinationPath, Path.GetFileNameWithoutExtension(emailFile) + "_" + counter + fileExtension);
+                counter++;
             }
 
-            m_logger.Info("Moved file to {0}", sNewFile);
+            _logger.Info("Moved file to {0}", newFileName);
             
-            File.Move(_sFile, sNewFile);
+            File.Move(emailFile, newFileName);
         }
 
-        public void Delete(string _sEmailFile)
+        public void Delete(string emailFilePath)
         {
-            m_logger.Info("Deleted file {0}", _sEmailFile);
+            _logger.Info("Deleted file {0}", emailFilePath);
 
-            File.Delete(_sEmailFile);
+            File.Delete(emailFilePath);
         }
 
-        public bool Send(MailMessage _mailMessage)
+        public bool Send(MailMessage mailMessage)
         {
             try
             {
-                m_smtpClient.Send(_mailMessage);
-                m_logger.Info("Email sent successfully!");
+                _smtpClient.Send(mailMessage);
+                _logger.Info("Email sent successfully!");
                 return true;
             }
-            catch (Exception _ex)
+            catch (Exception ex)
             {
-                m_logger.Error("Unable to send email {0}:\n{1}\n{2}", _ex.Message, _ex.StackTrace);
+                _logger.Error("Unable to send email {0}:\n{1}\n{2}", ex.Message, ex.StackTrace);
                 return false;
             }
         }
 
-        public string Load(string _sFileName)
+        public string Load(string fileName)
         {
-            return File.ReadAllText(_sFileName);
+            return File.ReadAllText(fileName);
         }
     }
 }
